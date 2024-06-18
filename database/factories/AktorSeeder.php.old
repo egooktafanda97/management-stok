@@ -1,0 +1,81 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Constant\Status;
+use App\Models\Agency;
+use App\Models\Kasir;
+use App\Models\User;
+use App\Repositories\GudangRepository;
+use App\Repositories\UserRepository;
+use App\Services\ActorService;
+use App\Services\AgencyService;
+use App\Services\GudangService;
+use App\Services\KasirService;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+
+class AktorSeeder extends Seeder
+{
+    public function __construct(
+        public ActorService $actor,
+        public AgencyService $agencyService,
+        public GudangService $gudangService,
+        public KasirService $kasirService,
+    ) {
+    }
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        // super admin
+        User::create([
+            'nama' => 'Super Admin',
+            'username' => 'superadmin',
+            'password' => "password",
+            'role' => 'superadmin',
+            'status_id' => Status::ACTIVE,
+        ]);
+        // agency create
+        $this->agencyService->create([
+            "oncard_instansi_id" => 1,
+            "kode_instansi" => "AGY1",
+            "nama" => "Pondok Pesantren Al-Munawwir",
+            "username" => "pondok_demo",
+            "password" => "password",
+            "alamat" => "Agency 1",
+        ]);
+
+        // update
+        $this->agencyService->update(1, [
+            "kode_instansi" => "AGY1",
+            "nama" => "Update Pondok Pesantren Al-Munawwir",
+            "username" => "pondok_demo",
+            "password" => "password",
+            "alamat" => "Agency 1",
+        ]);
+
+
+        // gundang
+        auth()->login(User::find(2)); // agency login
+        $this->gudangService->create([
+            "username" => "gudang_demo",
+            "password" => "password",
+            "nama" => "Gudang Demo",
+            "alamat" => "Gudang 1",
+            "telepon" => "08123456789",
+            "deskripsi" => "Gudang 1",
+        ]);
+
+        auth()->login(User::whereUsername('gudang_demo')->first()); // agency login
+        $this->kasirService->create([
+            "username" => "kasir_demo",
+            "password" => "password",
+            "nama" => "Kasir Demo",
+            "alamat" => "Kasir 1",
+            "telepon" => "08123456789",
+            "deskripsi" => "Kasir 1",
+        ]);
+    }
+}

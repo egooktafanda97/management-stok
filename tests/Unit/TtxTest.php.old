@@ -1,0 +1,471 @@
+<?php
+
+namespace Tests\Unit;
+
+use App\Constant\PayType;
+use App\Constant\Satuan;
+use App\Constant\Status;
+use App\Constant\TrxType;
+use App\Constant\UserType;
+use App\Dtos\BarangMasukDTOs;
+use App\Dtos\GeneralActorDTOs;
+use App\Dtos\KonversiSatuanDTOs;
+use App\Dtos\ProdukDTOs;
+use App\Dtos\TransactionDTOs;
+use App\Dtos\UnitPriecesDTOs;
+use App\Dtos\UsersDTOs;
+use App\Models\Agency;
+use App\Models\ConfigGudang;
+use App\Models\GeneralActor;
+use App\Models\Kasir;
+use App\Models\PaymentType;
+use App\Models\Produk;
+use App\Models\TrxTypes;
+use App\Models\UnitPrieces;
+use App\Models\User;
+use App\Services\AgencyService;
+use App\Services\BarangMasukService;
+use App\Services\GeneralActorService;
+use App\Services\GudangService;
+use App\Services\JenisProdukService;
+use App\Services\JenisSatuanService;
+use App\Services\KasirService;
+use App\Services\KonversiSatuanService;
+use App\Services\ProdukService;
+use App\Services\TrxService;
+use App\Services\UnitPriecesService;
+use Carbon\Carbon;
+use Database\Seeders\InstallSeeder;
+use Database\Seeders\StatusSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class TtxTest extends TestCase
+{
+    use RefreshDatabase;
+    public $agencys;
+    public $userIdKasir;
+    public $userIdGeneral;
+    public $UnitPriecesService;
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(StatusSeeder::class);
+    }
+
+    public function Agencystore()
+    {
+        $service = $this->app->make(AgencyService::class);
+        $createds =  $service->create([
+            "oncard_instansi_id" => 1,
+            "kode_instansi" => "xAGY1",
+            "nama" => "xPondok Pesantren Al-Munawwir",
+            "username" => "pondok_demo",
+            "password" => "password",
+            "alamat" => "xAgency 1",
+        ]);
+
+        return $createds;
+    }
+
+    public function GudangStore()
+    {
+        $agencys = $this->Agencystore();
+        auth()->login(User::find($agencys['user_id']));
+        $service = $this->app->make(GudangService::class);
+        $data = [
+            "username" => "gudang_demo",
+            "password" => "password",
+            "nama" => "Gudang Demo",
+            "alamat" => "Gudang 1",
+            "telepon" => "08123456789",
+            "deskripsi" => "Gudang 1",
+        ];
+        $createds =  $service->create($data);
+
+        $payTypes = ['CREDIT_CARD', 'PAYPAL', 'BANK_TRANSFER', 'CASH', 'CRYPTOCURRENCY', 'DEBS', 'ONCARD'];
+        foreach ($payTypes as $payType) {
+            PaymentType::create([
+                'agency_id' => 1,
+                'gudang_id' => $createds->id,
+                'name' => $payType,
+                'type' => $payType,
+                'props' => '[]',
+                'description' => $payType,
+                'icon' => $payType,
+                'status_id' => Status::ACTIVE,
+            ]);
+        }
+
+        $trxTypes = ['Sale', 'Purchase', 'Transfer', 'Withdrawal', 'Deposit', 'Refund', 'Expense', 'Income', 'Loan', 'TransferBalance', 'melting'];
+        foreach ($trxTypes as $trxType) {
+            TrxTypes::create([
+                'agency_id' => $agencys['id'],
+                'gudang_id' => $createds->id,
+                'users_create_id' => auth()->user()->id,
+                'name' => $trxType,
+                'descriptions' => $trxType,
+            ]);
+        }
+
+        ConfigGudang::set(
+            key: 'pph',
+            value: 10,
+            agency_id: $agencys['id'],
+            gudang_id: $createds->id,
+        );
+
+        $this->Produk($createds);
+        return $createds;
+    }
+
+
+    public function KasirStore()
+    {
+        $gudang = $this->GudangStore();
+        auth()->login(User::find($gudang['user_id']));
+        $service = $this->app->make(KasirService::class);
+        $data = [
+            "username" => "new_kasir_demo",
+            "password" => "password",
+            "nama" => "Kasir Demo",
+            "alamat" => "Kasir 1",
+            "telepon" => "08123456789",
+            "deskripsi" => "Kasir 1",
+        ];
+        $x = $service->create($data);
+        $this->userIdKasir = $x->user_id;
+        return  $x;
+    }
+
+    public function Produk($usGudang)
+    {
+        auth()->login(User::find($usGudang->user_id));
+        /**
+         * jenis produk
+         */
+        $jenisProd = $this->app->make(JenisProdukService::class);
+        $jenis = [
+            'Makanan',
+            'Minuman',
+            'Snack',
+            'Pakaian',
+            'Elektronik',
+        ];
+        foreach ($jenis as $key => $x) {
+            $jenisCreatd = $jenisProd->create([
+                'name' =>  $x,
+            ]);
+        }
+        /**
+         * --------------------------
+         */
+
+
+        /**
+         * Jenis satuan
+         */
+        $satuan = $this->app->make(JenisSatuanService::class);
+        $dataSatuan = ["Kilogram", "Gram", "Liter", "Mililiter", "Pcs", "Botol", "Dus", "Kardus", "Kodi", "Lusin", "Rim", "Gross", "Ton", "Kuintal", "Ons", "Pon", "Sendok", "Sendok Teh", "Sendok Makan", "Gelas", "Piring", "Mangkok", "Toples", "Kotak", "Kantong", "Karung", "Bungkus", "Bal", "Batang", "Butir", "Helai", "Lembar", "Buah", "Potong", "Ikat", "Keping", "Kepingan", "Kerat", "Keranjang", "Pack"];
+        foreach ($dataSatuan as $key => $x) {
+            $JenisSatuan = $satuan->create([
+                'name' =>  $x,
+            ]);
+        }
+        /**
+         * --------------------------------
+         */
+
+        /**
+         * produk create ///////////////////////////////////////////////////
+         */
+        // Produk 1
+        $service = $this->app->make(ProdukService::class);
+        $prod1 = $service->create(ProdukDTOs::fromArray([
+            'name' => 'Produk 1',
+            'deskripsi' => 'Deskripsi Produk 1',
+            'gambar' => 'gambar1.jpg',
+            'jenis_produk_id' => $jenisProd->findByName('Makanan')->id,
+            'barcode' => '124123214',
+            'satuan_stok' => [
+                'satuan_stok_id' => $satuan->findByName('Pcs')->id
+            ],
+        ])->toArray());
+        $unitPrieces = $this->app->make(UnitPriecesService::class);
+        $unitDTOs = UnitPriecesDTOs::fromArray([
+            "produks_id" => $prod1->id,
+            "name" => "satuan",
+            "priece" => 10000,
+            "jumlah_satan_jual" => 3,
+            "jenis_satuan_jual_id" => $satuan->findByName('Pcs')->id,
+            "diskon" => 3, // diskon 3%
+        ]);
+        $unitPrieces->fromCreatd($unitDTOs)
+            ->store();
+        //convert satuan
+        $konversi = $this->app->make(KonversiSatuanService::class);
+        $konversiDTOs = $konversi->fromDTOs(KonversiSatuanDTOs::fromArray([
+            'produks_id' => $prod1->id,
+            'satuan_id' => Satuan::DUS,
+            'satuan_konversi_id' => $prod1->satuanStok->getSatuanStokId(),
+            'nilai_konversi' => (float) 10,
+        ]))->create();
+        $this->assertNotNull($konversiDTOs);
+
+        //  barang masuk add stok
+        $bService = $this->app->make(BarangMasukService::class);
+        $bService->fromDTOs((new  BarangMasukDTOs(
+            produks_id: $prod1->id,
+            supplier_id: null,
+            harga_beli: 10000,
+            jumlah_barang_masuk: 1,
+            satuan_beli_id: Satuan::DUS,
+        )))->create();
+        /**
+         * ///////////////////////////////////////////////////
+         */
+        // Produk 2
+        $prod2 = $service->create(ProdukDTOs::fromArray([
+            'name' => 'Produk 2',
+            'deskripsi' => 'Deskripsi Produk 2',
+            'gambar' => 'gambar2.jpg',
+            'jenis_produk_id' => $jenisProd->findByName('Minuman')->id,
+            'barcode' => '124123215',
+            'satuan_stok' => [
+                'satuan_stok_id' =>  $satuan->findByName('Botol')->id,
+            ],
+        ])->toArray());
+        $unitPrieces = $this->app->make(UnitPriecesService::class);
+        $unitDTOs = UnitPriecesDTOs::fromArray([
+            "produks_id" => $prod2->id,
+            "name" => "satuan",
+            "priece" => 1000,
+            "jumlah_satan_jual" => 1,
+            "jenis_satuan_jual_id" => $satuan->findByName('Botol')->id,
+            "diskon" => 0,
+        ]);
+        $unitPrieces->fromCreatd($unitDTOs)
+            ->store();
+        $unitPrieces = $this->app->make(UnitPriecesService::class);
+        $unitDTOs = UnitPriecesDTOs::fromArray([
+            "produks_id" => $prod2->id,
+            "name" => "pack",
+            "priece" => 3000,
+            "jumlah_satan_jual" => 1,
+            "jenis_satuan_jual_id" => Satuan::PACK,
+            "diskon" => 3, // diskon 3%
+        ]);
+        $unitPrieces->fromCreatd($unitDTOs)
+            ->store();
+
+        $unitPrieces = $this->app->make(UnitPriecesService::class);
+        $unitDTOs = UnitPriecesDTOs::fromArray([
+            "produks_id" => $prod2->id,
+            "name" => "renteng",
+            "priece" => 3000,
+            "jumlah_satan_jual" => 3,
+            "jenis_satuan_jual_id" => $satuan->findByName('Pcs')->id,
+            "diskon" => 3, // diskon 3%
+        ]);
+        $unitPrieces->fromCreatd($unitDTOs)
+            ->store();
+        //convert satuan dus
+        $konversi = $this->app->make(KonversiSatuanService::class);
+        $konversiDTOs = $konversi->fromDTOs(KonversiSatuanDTOs::fromArray([
+            'produks_id' => $prod2->id,
+            'satuan_id' => Satuan::DUS,
+            'satuan_konversi_id' => $prod2->satuanStok->getSatuanStokId(),
+            'nilai_konversi' => (float) 10,
+        ]))->create();
+        $this->assertNotNull($konversiDTOs);
+        // convert satuan pack
+        $konversi = $this->app->make(KonversiSatuanService::class);
+        $konversiDTOs = $konversi->fromDTOs(KonversiSatuanDTOs::fromArray([
+            'produks_id' => $prod2->id,
+            'satuan_id' => Satuan::PACK,
+            'satuan_konversi_id' => $prod2->satuanStok->getSatuanStokId(),
+            'nilai_konversi' => (float) 10,
+        ]))->create();
+        $this->assertNotNull($konversiDTOs);
+
+        $bService = $this->app->make(BarangMasukService::class);
+        $bService->fromDTOs((new  BarangMasukDTOs(
+            produks_id: $prod2->id,
+            supplier_id: null,
+            harga_beli: 10000,
+            jumlah_barang_masuk: 10,
+            satuan_beli_id: Satuan::DUS,
+        )))->create();
+        /**
+         * ///////////////////////////////////////////////////
+         */
+        // Produk 3
+        $prod3 = $service->create(ProdukDTOs::fromArray([
+            'name' => 'Produk 3',
+            'deskripsi' => 'Deskripsi Produk 3',
+            'gambar' => 'gambar3.jpg',
+            'jenis_produk_id' => $jenisProd->findByName('Snack')->id,
+            'barcode' => '124123216',
+            'satuan_stok' => [
+                'satuan_stok_id' =>  $satuan->findByName('Pcs')->id,
+            ],
+        ])->toArray());
+
+        $unitPrieces = $this->app->make(UnitPriecesService::class);
+        $unitDTOs = UnitPriecesDTOs::fromArray([
+            "produks_id" => $prod3->id,
+            "name" => "satuan",
+            "priece" => 2000,
+            "jumlah_satan_jual" => 1,
+            "jenis_satuan_jual_id" => $satuan->findByName('Pcs')->id,
+            "diskon" => 0,
+        ]);
+        $unitPrieces->fromCreatd($unitDTOs)
+            ->store();
+        // ************************************************
+        $unitPrieces = $this->app->make(UnitPriecesService::class);
+        $unitDTOs = UnitPriecesDTOs::fromArray([
+            "produks_id" => $prod3->id,
+            "name" => "beli 2 gratis 1",
+            "priece" => 4000,
+            "jumlah_satan_jual" => 3,
+            "jenis_satuan_jual_id" => $satuan->findByName('Pcs')->id,
+            "diskon" => 0,
+        ]);
+        $unitPrieces->fromCreatd($unitDTOs)
+            ->store();
+        $this->UnitPriecesService = $unitPrieces;
+        // ------------------------------barang masuk--------------------
+        $konversi = $this->app->make(KonversiSatuanService::class);
+        $konversiDTOs = $konversi->fromDTOs(KonversiSatuanDTOs::fromArray([
+            'produks_id' => $prod3->id,
+            'satuan_id' => Satuan::DUS,
+            'satuan_konversi_id' => $prod3->satuanStok->getSatuanStokId(),
+            'nilai_konversi' => (float) 20,
+        ]))->create();
+        $this->assertNotNull($konversiDTOs);
+        $bService = $this->app->make(BarangMasukService::class);
+        $bService->fromDTOs((new  BarangMasukDTOs(
+            produks_id: $prod3->id,
+            supplier_id: null,
+            harga_beli: 10000,
+            jumlah_barang_masuk: 10,
+            satuan_beli_id: Satuan::DUS,
+        )))->create();
+        /**
+         * ///////////////////////////////////////////////////
+         */
+    }
+
+    public function Genral()
+    {
+        auth()->login(User::find(1));
+        $service = $this->app->make(GeneralActorService::class);
+        $generalCreated = $service->fromDTOs(new GeneralActorDTOs(
+            oncard_instansi_id: 1,
+            oncard_user_id: 1,
+            oncard_account_number: '123123123',
+            nama: "ego oktafanda",
+            user_type: UserType::Merchant,
+            sync_date: Carbon::now()->format("Y-m-d"),
+            detail: "user merchant",
+            user: new UsersDTOs(
+                username: "ego",
+                password: "password",
+            )
+        ))->create();
+        $this->userIdGeneral = $generalCreated->user->id;
+        return $generalCreated;
+    }
+    public function init()
+    {
+        $seller  = $this->KasirStore();
+        auth()->login(User::find($seller['user_id']));
+        $buyer =  $this->Genral();
+    }
+
+    public function testTransaction()
+    {
+        $this->init();
+        auth()->login(User::find($this->userIdKasir));
+        $service = $this->app->make(TrxService::class);
+        $trxDTos = new TransactionDTOs();
+        /**
+         * orders ---------------------------------------------------
+         * Produk 
+         */
+        $trxDTos->OrderItems(
+            produks_id: 1,
+            qty: 2,
+            satuan: $this->UnitPriecesService->getByJenisSatuanJualId(
+                jenisSatuanJualId: Satuan::PCS,
+                produkId: 1
+            )
+        );
+        $trxDTos->OrderItems(
+            produks_id: 2,
+            qty: 2,
+            satuan: $this->UnitPriecesService->getByJenisSatuanJualId(
+                jenisSatuanJualId: Satuan::PACK,
+                produkId: 2
+            )
+        );
+        $trxDTos->OrderItems(
+            produks_id: 3,
+            qty: 2,
+            satuan: $this->UnitPriecesService->getByJenisSatuanJualId(
+                jenisSatuanJualId: Satuan::PCS,
+                produkId: 1
+            )
+        );
+        /**
+         * ---------------------------------------
+         */
+        $transaction = $service->fromDTOs(
+            $trxDTos->order(
+                pelanggan_id: 1,
+                total_uang_pelanggan: 100000,
+                payment_type_id: PayType::CASH,
+                diskon: 10,
+                pph: true,
+            )
+        );
+
+        // cek jumlah order
+        $this->assertEquals(3, count($transaction->getDTOs()->getItemsOrder()));
+        /**
+         * Produk 1
+         * harga satuan 10000 dengan satuan pcs
+         */
+        $prodik1 = $transaction->getDTOs()->trxDetail[0];
+        $this->assertEquals(1, $prodik1->getProduksId());
+        $hargaSatuan = UnitPrieces::find($prodik1->unit_priece_id);
+        $this->assertEquals(10000, $hargaSatuan->priece);
+        $this->assertEquals(5, $hargaSatuan->jenis_satuan_jual_id);
+        $this->assertEquals(2,  $prodik1->getJumlah()); // jumlah order 20000
+        $this->assertEquals(3, $prodik1->getDiskon()); // dikurangi diskon 3%
+        $this->assertEquals(19400, $prodik1->getTotal()); // dikurangi diskon 3%
+        // cek Aktor
+        $kasirAktual = Kasir::whereUserId($this->userIdKasir)->first();
+        $generalAktual = GeneralActor::whereUserId($this->userIdGeneral)->first();
+        $this->assertEquals($kasirAktual->id, $transaction->getDTOs()->getkasirId());
+        $this->assertEquals($kasirAktual->user_id, $transaction->getDTOs()->getUserKasirId());
+        $this->assertEquals($generalAktual->user_id, $transaction->getDTOs()->getUserBuyerId());
+        // cek total gross
+        // (20000 - 3%) = 19400 + 2000 - diskon + 4000 - diskon = 26000
+        $this->assertEquals(collect([19400, 2000, 4000])->sum(), $transaction->getDTOs()->getTotalGross());
+        // cek pph
+        $this->assertEquals(10, $transaction->getDTOs()->getTax());
+        //  collect([19400, 2000, 4000])->sum()  + 10% = 28600
+        $diskon = collect([19400, 2000, 4000])->sum() - collect([19400, 2000, 4000])->sum() * 10 / 100;
+        $taxAktual = $diskon * 10 / 100; // 2286
+        $this->assertEquals($taxAktual, $transaction->getDTOs()->getTaxDeduction());
+        $this->assertEquals($diskon + $taxAktual, $transaction->getDTOs()->getSubTotal());
+
+        // trx proccees
+        $trx =  $transaction
+            ->middle()
+            ->trxProccessing();
+        dd($transaction->payment());
+    }
+}
