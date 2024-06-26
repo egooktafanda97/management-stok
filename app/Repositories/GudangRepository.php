@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Constant\Status;
 use App\Contract\AttributesFeature\Attributes\Repository;
 use App\Models\Gudang;
+use App\Services\ActorService;
 
 #[Repository(model: Gudang::class)]
 class GudangRepository extends BaseRepository
@@ -23,5 +24,13 @@ class GudangRepository extends BaseRepository
         ];
         $this->data = array_filter($request);
         return $this;
+    }
+
+    // getGudangPaginate
+    public function getGudangPaginate(ActorService $actorService, $limit = 10)
+    {
+        return $this->model
+            ->where('agency_id', $actorService->agency()->id)
+            ->paginate($limit);
     }
 }

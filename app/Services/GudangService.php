@@ -82,4 +82,14 @@ class GudangService
             throw new \Exception($th->getMessage());
         }
     }
+
+    public function find(int $id)
+    {
+        return $this->gudangRepository->find($id);
+    }
+    // getPaginate
+    public function getPaginate($limit = 10)
+    {
+        return $this->gudangRepository->getGudangPaginate($this->actor, $limit);
+    }
 }

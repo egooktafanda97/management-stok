@@ -1,8 +1,18 @@
 <ul class="metismenu" id="menu">
     <li class="menu-label">MENU</li>
+    @role('agency')
+        <li>
+            <a href="/gudang">
+                <div class="parent-icon">
+                    <i class='bx bx-home circle'></i>
+                </div>
+                <div class="menu-title">DATA GUDANG</div>
+            </a>
+        </li>
+    @endrole
     @role('gudang')
         <li>
-            <a href="/home">
+            <a href="/gudang">
                 <div class="parent-icon"><i class='bx bx-home-circle'></i>
                 </div>
                 <div class="menu-title">DASHBOARD</div>
