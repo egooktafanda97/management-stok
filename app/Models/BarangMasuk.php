@@ -60,6 +60,11 @@ class BarangMasuk extends Model
         return $this->belongsTo(JenisSatuan::class, 'satuan_beli_id');
     }
 
+    // satuan sebelumnya
+    public function satuanSebelumnya()
+    {
+        return $this->belongsTo(JenisSatuan::class, 'satuan_sebelumnya_id');
+    }
 
 
     // Relasi dengan tabel 'status'
@@ -84,5 +89,10 @@ class BarangMasuk extends Model
             'satuan_sebelumnya_id' => 'required|integer|exists:jenis_satuans,id',
             'status_id' => 'required|integer|exists:status,id',
         ];
+    }
+
+    public static function withAll()
+    {
+        return ['agency', 'gudang', 'userCreate', 'satuanSebelumnya', 'produk', 'supplier', 'satuanBeli', 'status'];
     }
 }

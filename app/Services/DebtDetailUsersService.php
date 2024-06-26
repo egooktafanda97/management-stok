@@ -17,18 +17,26 @@ class DebtDetailUsersService
 
     public function fromDTOs(DebtDetailUserDTOs $debtDetailUserDTOs): self
     {
-        $this->debtDetailUserDTOs = $debtDetailUserDTOs
-            ->setAgencyId($this->actorService->agency()->id)
-            ->setGudangId($this->actorService->gudang()->id)
-            ->setUserKasirId($this->actorService->kasir()->id);
-        return $this;
+        try {
+            $this->debtDetailUserDTOs = $debtDetailUserDTOs
+                ->setAgencyId($this->actorService->agency()->id)
+                ->setGudangId($this->actorService->gudang()->id)
+                ->setUserKasirId($this->actorService->kasir()->id);
+            return $this;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
-    public function create()
+    public function createFroTrx()
     {
-        return $this->debtDetailUsersRepository
-            ->setId($this->debtDetailUserDTOs->getId() ?? null)
-            ->setData($this->debtDetailUserDTOs->toArray())
-            ->validate()
-            ->save();
+        try {
+            return $this->debtDetailUsersRepository
+                ->setId($this->debtDetailUserDTOs->getId() ?? null)
+                ->setData($this->debtDetailUserDTOs->toArray())
+                ->validate()
+                ->save();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

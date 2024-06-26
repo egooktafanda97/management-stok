@@ -28,4 +28,12 @@ class JenisSatuanRepository extends BaseRepository
             ->where('gudang_id', $actor->gudang()->id)
             ->first();
     }
+
+    // getData
+    public function getByAgency(ActorService $actorService)
+    {
+        return $this->model->where('agency_id', $actorService->agency()->id)
+            ->where('gudang_id', $actorService->gudang()->id)
+            ->get();
+    }
 }

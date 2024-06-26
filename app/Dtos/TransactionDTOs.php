@@ -5,6 +5,7 @@ namespace App\Dtos;
 use App\Constant\PayType;
 use App\Contract\AttributesFeature\Attributes\Getter;
 use App\Contract\AttributesFeature\Attributes\Setter;
+use App\Models\Transaksi;
 
 class TransactionDTOs extends BaseDTOs
 {
@@ -13,6 +14,7 @@ class TransactionDTOs extends BaseDTOs
 
     #[Setter] #[Getter]
     public InvoiceDTOs $invoiceDTOs;
+
 
     #[Setter] #[Getter]
     public array $orders = [
@@ -257,5 +259,11 @@ class TransactionDTOs extends BaseDTOs
     {
         $this->invoiceDTOs = $invoiceDTOs;
         return $this;
+    }
+
+    public function toTransactionDetail(string $invoiceId)
+    {
+        $findByInvoce = Transaksi::where('invoice_id', $invoiceId)->first();
+        (self::fromModel($findByInvoce))->fromDTOs($this);
     }
 }

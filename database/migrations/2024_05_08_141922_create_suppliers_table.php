@@ -15,7 +15,9 @@ return new class extends Migration
             $table->bigIncrements("id");
             $table->unsignedInteger('agency_id');
             $table->foreign('agency_id')->references('id')->on('agency');
-            $table->string('nama_supplier');
+            $table->unsignedInteger('gudang_id');
+            $table->foreign('gudang_id')->references('id')->on('gudang')->onDelete('cascade');
+            $table->string('name');
             $table->text('alamat_supplier')->nullable();
             $table->string('nomor_telepon_supplier')->nullable();
             $table->timestamps();

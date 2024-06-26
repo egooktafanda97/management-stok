@@ -11,21 +11,20 @@
                         </div>
                     </div>
                     <hr>
-                    <form class="row g-3" action="{{ url('jenis/editdata/' . $jenisproduk->id) }}" method="POST"
-                        enctype="multipart/form-data">
+                    <form action="{{ url('jenis/editdata/' . $jenisproduk->id) }}" class="row g-3"
+                        enctype="multipart/form-data" method="POST">
                         @csrf
                         <!-- Token CSRF -->
                         <div class="col-md-6">
-                            <label for="nama_jenis_produk" class="form-label">NAMA JENIS PRODUK</label>
-                            <input type="text" class="form-control border-start-0" id="nama_jenis_produk"
-                                name="nama_jenis_produk" placeholder="Nama Jenis"
-                                value="{{ $jenisproduk->nama_jenis_produk }}" required />
+                            <label class="form-label" for="name">NAMA JENIS PRODUK</label>
+                            <input class="form-control border-start-0" id="name" name="name"
+                                placeholder="Nama Jenis" required type="text" value="{{ $jenisproduk->name }}" />
                         </div>
 
 
                         <div class="w-100 border-top"></div>
                         <div class="col">
-                            <button type="submit" class="btn btn-outline-success"><i class='bx bx-save me-0'></i>
+                            <button class="btn btn-outline-success" type="submit"><i class='bx bx-save me-0'></i>
                             </button>
                         </div>
                     </form>

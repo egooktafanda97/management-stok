@@ -7,14 +7,15 @@ use App\Contract\AttributesFeature\Utils\AttributeExtractor;
 use App\Contract\BaseRepositoryInterface;
 use App\Utils\ErrorResponse;
 use Illuminate\Support\Facades\Validator;
-use Nette\Utils\Callback;
 
 abstract class BaseRepository implements BaseRepositoryInterface
 {
     protected array $validated;
     protected string | int | null $id = null;
     protected array $data = [];
+    protected array $with = [];
     public $model;
+    private $costum_rules = [];
     public function __construct(
         $model = null
     ) {
@@ -26,6 +27,12 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function __call($name, $arguments)
     {
         $this->setAttributeModel();
+    }
+
+    public function setRelationWith($with)
+    {
+        $this->with = $with;
+        return $this;
     }
 
 
@@ -41,7 +48,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return [];
     }
 
-    public function setAttributeModel()
+    private function setAttributeModel()
     {
         $models =  (new AttributeExtractor())->setClass(get_called_class())
             ->setAttribute(Repository::class)
@@ -53,6 +60,19 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function getValidated()
     {
         return $this->validated;
+    }
+
+    public function setCostumRules(array $rules)
+    {
+        $this->costum_rules = $rules;
+        return $this;
+    }
+
+    public function getRoules()
+    {
+        if (count($this->costum_rules) > 0)
+            return $this->costum_rules ?? [];
+        return $this->rule($this->getId() ?? null);
     }
 
     public function validate(array $data = [])
@@ -70,7 +90,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
                 }
             }
 
-            $validation = Validator::make($data, $this->rule(($this->getId() ?? null)));
+            $validation = Validator::make($data, $this->getRoules());
             if ($validation->fails()) {
                 (ErrorResponse::getInstance())->setError("validate", $validation->errors());
                 throw new \Exception($validation->errors()->first());
@@ -201,5 +221,24 @@ abstract class BaseRepository implements BaseRepositoryInterface
     {
         $this->model->find($id)->update($data);
     }
-    // public function transformer(array $data);
+
+    public function getPaginate($callback, $paginate = 10)
+    {
+        return $this->model->query(function ($q) use ($callback) {
+            return $callback($this);
+        })
+            ->with($this->model::allWith() ?? [])
+            ->paginate($paginate);
+    }
+
+
+    public function search($callback, $limit = 10)
+    {
+        return $this->model->where(function ($query) use ($callback) {
+            $callback($query);
+        })
+            ->with($this->with)
+            ->limit($limit)
+            ->get();
+    }
 }

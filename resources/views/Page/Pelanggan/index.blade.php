@@ -10,62 +10,57 @@
                         <ol class="breadcrumb mb-0 p-0">
                             <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                             </li>
-                            <li class="breadcrumb-item active" aria-current="page">Data Pelanggan</li>
+                            <li aria-current="page" class="breadcrumb-item active">Data Pelanggan</li>
                         </ol>
                     </nav>
                 </div>
                 <div class="ms-auto">
                     <div class="btn-group">
-                        <a href="/pelanggan/tambah" class="btn btn-success"><i class='bx bx-plus-circle'></i> TAMBAH
+                        <a class="btn btn-success" href="/pelanggan/tambah"><i class='bx bx-plus-circle'></i> TAMBAH
                             DATA</a>
                     </div>
                 </div>
             </div>
             <!--end breadcrumb-->
-            <h6 class="mb-0 text-uppercase">Data Pelanggan</h6>
             <hr />
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="example" class="table table-striped table-bordered" style="width:100%">
+                        <table class="table table-striped table-bordered" id="example" style="width:100%">
                             <thead>
                                 <tr>
+                                    <th>NO REKENIG ONCARD</th>
                                     <th>NAMA</th>
-                                    <th>ALAMAT</th>
-                                    <th>NOMOR TELEPON</th>
+                                    <th>TIPE USER</th>
+                                    <th>KETERANGAN</th>
                                     <th>AKSI</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($pelanggan as $pelanggan)
+                                @foreach ($pelanggans as $pelanggan)
                                     <tr>
-                                        <td>{{ $pelanggan->nama_pelanggan }}</td>
-                                        <td>{{ $pelanggan->alamat_pelanggan }}</td>
-                                        <td>{{ $pelanggan->nomor_telepon_pelanggan }}</td>
+                                        <td>{{ $pelanggan->oncard_account_number ?? '' }}</td>
+                                        <td>{{ $pelanggan->nama ?? '' }}</td>
+                                        <td>{{ $pelanggan->user_type ?? '' }}</td>
+                                        <td>{{ $pelanggan->detail ?? '' }}</td>
                                         <td>
-                                            <a href="{{ url('pelanggan/edit', ['id' => $pelanggan->id]) }}"
-                                                class="btn btn-sm btn-primary"><i class='bx bx-pencil'></i></a>
-                                            <button class="btn btn-sm btn-danger btn-delete"
-                                                data-id="{{ $pelanggan->id }}"><i class='bx bx-trash'></i></button>
-                                            <form id="delete-form-{{ $pelanggan->id }}"
-                                                action="{{ url('pelanggan/hapus', ['id' => $pelanggan->id]) }}"
-                                                method="GET" style="display: none;">
-                                                @csrf
-                                            </form>
+                                            <a class="btn btn-sm btn-primary"
+                                                href="{{ url('pelanggan/edit', ['id' => $pelanggan->id]) }}"><i
+                                                    class='bx bx-pencil'></i></a>
+                                            <button class="btn btn-sm btn-danger destory-items"
+                                                data-id="{{ $pelanggan->id }}"
+                                                data-url="{{ url('pelanggan/delete') }}/{{ $pelanggan->id }}"
+                                                type="button">
+                                                <i class='bx bx-trash'></i>
+                                            </button>
                                         </td>
                                     </tr>
                                 @endforeach
-
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>NAMA</th>
-                                    <th>ALAMAT</th>
-                                    <th>NOMOR TELEPON</th>
-                                    <th>AKSI</th>
-                                </tr>
-                            </tfoot>
                         </table>
+                    </div>
+                    <div class="text-end w-100 align-end">
+                        {!! $pelanggans->links('pagination::bootstrap-4') !!}
                     </div>
                 </div>
             </div>

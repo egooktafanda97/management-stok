@@ -12,7 +12,8 @@ class Supplier extends Model
 
     protected $fillable = [
         'agency_id',
-        'nama_supplier',
+        'gudang_id',
+        'name',
         'alamat_supplier',
         'nomor_telepon_supplier'
     ];

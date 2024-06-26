@@ -76,10 +76,13 @@ class TrxContainerService
 
                 agency: AgencyDTOs::fromModel($actorService->agency())
                     ->setId($actorService->agency()->id),
+
                 gudang: GudangDTOs::fromModel($actorService->gudang())
                     ->setId($actorService->gudang()->id),
+
                 kasir: KasirDTos::fromModel($actorService->kasir())
                     ->setId($actorService->kasir()->id),
+
                 generalActor: GeneralActorDTOs::fromModel($actorService->general($pelangganId))
                     ->setId($actorService->general($pelangganId)->id)
             );
@@ -124,7 +127,7 @@ class TrxContainerService
                     ));
                 } catch (\Throwable $th) {
                     log::error('trx container setStokUpdate()' . $th->getMessage());
-                    throw new \Exception('produk name:' . ' ' . $item['produks_id'] . ' ' . $th->getMessage());
+                    throw new \Exception('setStokUpdate:' . ' ' . $item['produks_id'] . ' ' . $th->getMessage());
                 }
             }
         } catch (\Throwable $th) {
@@ -160,7 +163,9 @@ class TrxContainerService
     {
         try {
             $total = 0;
+
             foreach ($this->tDTOs->getItemsOrder() as $item) {
+
                 try {
                     $unitPriece = $item['satuan']; // object unit priece
                     $diskon = $unitPriece->diskon ?? 0; // %
@@ -169,7 +174,7 @@ class TrxContainerService
                     $total += $sums;
                 } catch (\Throwable $th) {
                     Log::error('trx container sumTotalOrderGross()' . $th->getMessage());
-                    throw new \Exception('produk name:' . ' ' . $item['produks_id'] . ' ' . $th->getMessage());
+                    throw new \Exception('sumTotalOrderGross:' . ' ' . $item['produks_id'] . ' ' . $th->getMessage());
                 }
             }
             $this->tDTOs->setSubTotalOrder($total);
@@ -291,7 +296,11 @@ class TrxContainerService
      */
     public function validatePaymentCustomer(): bool
     {
-        return $this->tDTOs->getOrders()['total_customer_money'] >= $this->tDTOs->getSubTotal();
+        if ($this->tDTOs->getOrders()['payment_type_id'] == PayType::CASH) {
+            return $this->tDTOs->getOrders()['total_customer_money'] >= $this->tDTOs->getSubTotal();
+        } else if ($this->tDTOs->getOrders()['payment_type_id'] == PayType::DEBS) {
+            return true;
+        }
     }
     /**
      * cek stok tersedia atau tidak
@@ -322,7 +331,7 @@ class TrxContainerService
                     return true;
                 } catch (\Throwable $th) {
                     Log::error('trx container validateStok()' . $th->getMessage());
-                    throw new \Exception('produk name:' . ' ' . $item['produks_id'] . ' ' . $th->getMessage());
+                    throw new \Exception('validateStok:' . ' ' . $item['produks_id'] . ' ' . $th->getMessage());
                 }
             }
         } catch (\Throwable $th) {

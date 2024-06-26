@@ -15,4 +15,5 @@ enum TrxType: int
     const Loan = 9; // Pinjaman
     const TransferBalance = 10; // Transfer Saldo
     const melting = 11;
+    const PAYMENT = 12; // pembayaran
 }

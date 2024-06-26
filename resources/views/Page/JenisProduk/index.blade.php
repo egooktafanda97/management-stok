@@ -10,13 +10,13 @@
                         <ol class="breadcrumb mb-0 p-0">
                             <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                             </li>
-                            <li class="breadcrumb-item active" aria-current="page">Data Jenis Produk</li>
+                            <li aria-current="page" class="breadcrumb-item active">Data Jenis Produk</li>
                         </ol>
                     </nav>
                 </div>
                 <div class="ms-auto">
                     <div class="btn-group">
-                        <a href="/jenis/tambah" class="btn btn-success"><i class='bx bx-plus-circle'></i> TAMBAH
+                        <a class="btn btn-success" href="/jenis/tambah"><i class='bx bx-plus-circle'></i> TAMBAH
                             DATA</a>
                     </div>
                 </div>
@@ -27,7 +27,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="example" class="table table-striped table-bordered" style="width:100%">
+                        <table class="table table-striped table-bordered" id="example" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>JENIS PRODUK</th>
@@ -38,17 +38,18 @@
                             <tbody>
                                 @foreach ($jenisproduk as $jenisproduk)
                                     <tr>
-                                        <td>{{ $jenisproduk->nama_jenis_produk }}</td>
+                                        <td>{{ $jenisproduk->name }}</td>
 
                                         <td>
-                                            <a href="{{ url('jenis/edit', ['id' => $jenisproduk->id]) }}"
-                                                class="btn btn-sm btn-primary"><i class='bx bx-pencil'></i></a>
+                                            <a class="btn btn-sm btn-primary"
+                                                href="{{ url('jenis/edit', ['id' => $jenisproduk->id]) }}"><i
+                                                    class='bx bx-pencil'></i></a>
 
                                             <button class="btn btn-sm btn-danger btn-delete"
                                                 data-id="{{ $jenisproduk->id }}"><i class='bx bx-trash'></i></button>
 
-                                            <form id="delete-form-{{ $jenisproduk->id }}"
-                                                action="{{ url('jenis/hapus', ['id' => $jenisproduk->id]) }}" method="GET"
+                                            <form action="{{ url('jenis/hapus', ['id' => $jenisproduk->id]) }}"
+                                                id="delete-form-{{ $jenisproduk->id }}" method="GET"
                                                 style="display: none;">
                                                 @csrf
                                             </form>

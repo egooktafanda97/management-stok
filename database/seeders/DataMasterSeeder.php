@@ -26,12 +26,13 @@ class DataMasterSeeder extends Seeder
     public function run(): void
     {
         auth()->login(User::whereUsername('gudang_demo')->first());
-        $payTypes = ['CREDIT_CARD', 'PAYPAL', 'BANK_TRANSFER', 'CASH', 'CRYPTOCURRENCY', 'DEBS', 'ONCARD'];
+        $payTypes = ['CASH', 'DEBS', 'ONCARD'];
         foreach ($payTypes as $payType) {
             PaymentType::create([
                 'agency_id' => 1,
                 'gudang_id' => Gudang::whereUserId(auth()->user()->id)->first()->id,
                 'name' => $payType,
+                'alias' => $payType,
                 'type' => $payType,
                 'props' => '[]',
                 'description' => $payType,
@@ -40,7 +41,7 @@ class DataMasterSeeder extends Seeder
             ]);
         }
 
-        $trxTypes = ['Sale', 'Purchase', 'Transfer', 'Withdrawal', 'Deposit', 'Refund', 'Expense', 'Income', 'Loan', 'TransferBalance', 'melting'];
+        $trxTypes = ['Sale', 'Purchase', 'Transfer', 'Withdrawal', 'Deposit', 'Refund', 'Expense', 'Income', 'Loan', 'TransferBalance', 'melting', 'PAYMENT'];
         foreach ($trxTypes as $trxType) {
             TrxTypes::create([
                 'agency_id' => Gudang::whereUserId(auth()->user()->id)->first()->agency_id,

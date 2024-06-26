@@ -28,4 +28,12 @@ class JenisProdukRepository extends BaseRepository
             ->where('gudang_id', $actor->gudang()->id)
             ->first();
     }
+
+    // getByUsers
+    public function getByUsers(ActorService $actor)
+    {
+        return $this->model->where('agency_id', $actor->agency()->id)
+            ->where('gudang_id', $actor->gudang()->id)
+            ->get();
+    }
 }

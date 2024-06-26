@@ -15,9 +15,9 @@
                         @csrf
                         <!-- Token CSRF -->
                         <div class="col-md-6">
-                            <label class="form-label" for="nama_produk">NAMA BUAH</label>
-                            <input class="form-control border-start-0" id="nama_produk" name="nama_produk"
-                                placeholder="Nama Buah" required type="text" />
+                            <label class="form-label" for="nama_produk">NAMA PRODUK</label>
+                            <input class="form-control border-start-0" id="name" name="name"
+                                placeholder="Nama produk" required type="text" />
                         </div>
 
                         <div class="col-md-6">
@@ -25,7 +25,7 @@
                             <select class="form-control" name="jenis_produk_id">
                                 <option value="">-- Pilih Jenis Produk --</option>
                                 @foreach ($jenisProduk as $jenis)
-                                    <option value="{{ $jenis->id }}">{{ $jenis->nama_jenis_produk }}</option>
+                                    <option value="{{ $jenis->id }}">{{ $jenis->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -35,7 +35,7 @@
                             <select class="form-control" name="supplier_id">
                                 <option value="">-- Pilih Supplier --</option>
                                 @foreach ($suppliers as $supplier)
-                                    <option value="{{ $supplier->id }}">{{ $supplier->nama_supplier }}</option>
+                                    <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -46,15 +46,43 @@
                                 placeholder="barcode Buah xxxx" type="text" />
                         </div>
 
-                        <div class="col-12">
+                        <div class="col-md-6">
+                            <label class="form-label" for="rak_id">RAK</label>
+                            <select class="form-control" name="rak_id">
+                                <option value="">-- Pilih Rak Penyimpanan --</option>
+                                @foreach ($rak as $jenis)
+                                    <option value="{{ $jenis->id }}">{{ $jenis->nomor }} - {{ $jenis->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+
+                        <div class="col-6">
+                            <label class="form-label" for="barcode">Harga Jual</label>
+                            <input class="form-control border-start-0" id="harga" name="harga"
+                                placeholder="Harga Jual" type="text" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label" for="satuan_id">SATUAN JUAL</label>
+                            <select class="form-control" name="satuan_id">
+                                <option value="">-- Pilih Satuan Jual --</option>
+                                @foreach ($satuan_jual as $jenis)
+                                    <option value="{{ $jenis->id }}">{{ $jenis->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- <div class="col-12">
                             <label class="form-label" for="stok">STOK</label>
                             <input class="form-control border-start-0" id="stok" name="stok" placeholder="Stok Buah"
                                 required type="number" />
-                        </div>
+                        </div> --}}
                         <div class="col-12">
                             <label class="form-label" for="deskripsi">DESKRIPSI</label>
                             <textarea class="form-control" id="deskripsi" name="deskripsi" placeholder="Deskripsi Buah" required rows="3"></textarea>
                         </div>
+
                         <div class="col-12">
                             <label class="form-label" for="gambar">GAMBAR BUAH</label>
                             <input class="form-control" id="gambar" name="gambar" required type="file">
@@ -62,8 +90,8 @@
 
 
                         <div class="w-100 border-top"></div>
-                        <div class="col">
-                            <button class="btn btn-outline-success" type="submit"><i class='bx bx-save me-0'></i>
+                        <div class="col flex justify-end">
+                            <button class="btn btn-outline-success" type="submit"><i class='bx bx-save me-0'> Simpan</i>
                             </button>
                         </div>
                     </form>

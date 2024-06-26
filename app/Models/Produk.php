@@ -84,6 +84,13 @@ class Produk extends Model
         return $this->hasMany(UnitPrieces::class, 'produks_id');
     }
 
+    // stok
+    public function stok()
+    {
+        return $this->belongsTo(Stok::class, 'id', 'produks_id');
+    }
+
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -117,5 +124,27 @@ class Produk extends Model
             $roles['status_id'] = 'nullable|exists:status,id';
         }
         return $roles;
+    }
+
+
+    public static function allWith()
+    {
+        return [
+            'agency',
+            'gudang',
+            'user',
+            'jenisProduk',
+            'rak',
+            'status',
+            'satuanStok' => function ($q) {
+                $q->with('jenisSatuan');
+            },
+            'unitPrieces' => function ($q) {
+                $q->with('jenisSatuanJual');
+            },
+            'stok' => function ($q) {
+                $q->with('satuan', 'satuanSebelumnya');
+            }
+        ];
     }
 }

@@ -46,8 +46,6 @@ class ProdukDTOs extends BaseDTOs
 
         public ?ProdukConfigDTOs $satuanStok = null,
 
-
-
     ) {
         parent::__construct();
     }

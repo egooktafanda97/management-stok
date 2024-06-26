@@ -38,4 +38,9 @@ class JenisProdukService
     {
         return $this->jenisProdukRepository->findByName($name, $this->actorService);
     }
+
+    public function getByUsers()
+    {
+        return $this->jenisProdukRepository->getByUsers($this->actorService);
+    }
 }

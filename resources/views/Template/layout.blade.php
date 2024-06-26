@@ -5,6 +5,19 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
+    @php
+        $token = '';
+        try {
+            $token =
+                !empty(auth()->user()) && !empty(auth()->guard('api'))
+                    ? auth()->guard('api')->login(auth()->user())
+                    : null;
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    @endphp
+    {{-- barer token --}}
+    <meta content="{{ $token }}" name="csrf-token">
     <!--favicon-->
     <link href="{{ asset('admin') }}/assets/images/favicon-32x32.png" rel="icon" type="image/png" />
     <!--plugins-->
@@ -30,6 +43,15 @@
 
 
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+    {{-- chart --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {{-- vite --}}
+    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+    {{-- <link href="{{ asset('build/assets/app-1bd03d06.css') }}" rel="stylesheet"> --}}
+    {{-- <script src="{{ asset('build/assets/app-56f70fe9.js') }}"></script> --}}
+    {{-- @endvite --}}
+    {{-- chart --}}
     @yield('style')
     @stack('style')
     <title>POINT OF SALES - FRUIT STORE</title>
@@ -61,7 +83,7 @@
         <header>
             <div class="topbar d-flex align-items-center">
                 <nav class="navbar navbar-expand">
-                    <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
+                    {{-- <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
                     </div>
                     <div class="search-bar flex-grow-1">
                         <div class="position-relative search-bar-box">
@@ -71,9 +93,10 @@
                             <span class="position-absolute top-50 search-close translate-middle-y"><i
                                     class='bx bx-x'></i></span>
                         </div>
-                    </div>
+                    </div> --}}
 
                 </nav>
+                <strong class="mr-10">{{ auth()->user()->username }}</strong>
             </div>
         </header>
         <!--end header -->
@@ -121,10 +144,34 @@
 
     {{-- UPLOAD --}}
     <script src="{{ asset('admin') }}/assets/plugins/Drag-And-Drop/dist/imageuploadify.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#image-uploadify').imageuploadify();
         })
+
+        $(".destory-items").click(function() {
+            var id = $(this).data('id');
+            var url = $(this).data('url');
+            swal({
+                    title: "Are you sure?",
+                    text: "Once deleted, you will not be able to recover this imaginary file!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        window.location.href = url
+                    }
+                });
+        });
+        const rupiah = (number) => {
+            return new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR"
+            }).format(number);
+        }
     </script>
     @stack('script')
 

@@ -83,6 +83,25 @@ class TrxDetail extends Model
         return $this->belongsTo(Status::class, 'status_id');
     }
 
+    // allWith
+    public static function allWith()
+    {
+        return [
+            'agency',
+            'gudang',
+            'userKasir',
+            'userBuyer',
+            'invoice',
+            'transaksi',
+            'produk' => function ($query) {
+                $query->with(Produk::allWith());
+            },
+            'unitPrice',
+            'satuan',
+            'status'
+        ];
+    }
+
     public static function rules($id = null)
     {
         return [

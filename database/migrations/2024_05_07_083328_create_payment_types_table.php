@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedInteger('gudang_id');
             $table->foreign('gudang_id')->references('id')->on('gudang')->onDelete('cascade');
             $table->string('name');
+            $table->string('alias')->nullable();
             $table->string('type');
             $table->text('props')->nullable();
             $table->string('description')->nullable();

@@ -45,8 +45,9 @@ class UnitPriecesService
     {
         try {
             $store = $this->unitPriecesRepository
+                ->setId($this->unitPriecesDTOs->id ?? null)
                 ->validate($this->unitPriecesDTOs->toArray())
-                ->create();
+                ->save();
             if (!$store) {
                 throw new \Exception("Create unit prieces failed");
             }
@@ -97,5 +98,11 @@ class UnitPriecesService
     public function findByIdSatuanAndProdukId(int $jenisSatuanJualId, int $produkId)
     {
         return $this->unitPriecesRepository->findByIdSatuanAndProdukId($jenisSatuanJualId, $produkId);
+    }
+
+    // findByProdukIdPaginate
+    public function findByProdukIdPaginate(int $produkId)
+    {
+        return $this->unitPriecesRepository->findByProdukIdPaginate($produkId);
     }
 }

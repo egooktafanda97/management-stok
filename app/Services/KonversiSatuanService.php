@@ -84,4 +84,24 @@ class KonversiSatuanService
             "to" => JenisSatuan::find($to),
         ];
     }
+
+    public function getByProduk($produkId)
+    {
+        return $this->konversiSatuanRepository->getByProduk(actorService: $this->actorService, produkId: $produkId);
+    }
+
+    public function delete($id)
+    {
+        try {
+            $delete = $this->konversiSatuanRepository
+                ->setId($id)
+                ->delete();
+            if (!$delete) {
+                throw new \Exception("Delete unit prieces failed");
+            }
+            return $delete;
+        } catch (\Throwable $th) {
+            throw new \Exception($th->getMessage());
+        }
+    }
 }

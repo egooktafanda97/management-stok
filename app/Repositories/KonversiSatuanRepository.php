@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Contract\AttributesFeature\Attributes\Repository;
 use App\Models\Konversisatuan;
+use App\Services\ActorService;
 
 #[Repository(Konversisatuan::class)]
 class KonversiSatuanRepository extends BaseRepository
@@ -35,5 +36,16 @@ class KonversiSatuanRepository extends BaseRepository
             return $query->where('produks_id', $produksId)
                 ->where("satuan_id", $satuanId);
         })->first();
+    }
+    public function getByProduk(ActorService $actorService, $produkId)
+    {
+        return $this->model->where('agency_id', $actorService->agency()->id)
+            ->where('gudang_id', $actorService->gudang()->id)
+            ->where('produks_id', $produkId)
+            ->with([
+                'satuan',
+                'satuanKonversi',
+            ])
+            ->get();
     }
 }

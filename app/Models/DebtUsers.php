@@ -41,6 +41,12 @@ class DebtUsers extends Model
         return $this->belongsTo(User::class, 'user_debt_id');
     }
 
+    // RELATION GENERAL ACTOR
+    public function generalActor()
+    {
+        return $this->belongsTo(GeneralActor::class, 'user_debt_id', 'user_id');
+    }
+
     public static function rules($id = null)
     {
         return [

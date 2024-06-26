@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 
 class Authenticate extends Middleware
 {
+    // hndler
+    public function handle($request, \Closure $next, ...$guards)
+    {
+        $this->authenticate($request, $guards);
+
+        return $next($request);
+    }
     /**
      * Get the path the user should be redirected to when they are not authenticated.
      */

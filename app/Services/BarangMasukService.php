@@ -89,8 +89,6 @@ class BarangMasukService
                 ->setData($this->barangMasukDTOs->toArray())
                 ->validate()
                 ->save();
-
-
             try {
                 $this->stokService->fromDTOs($this->stokDTOs)
                     ->updateStok();
@@ -133,7 +131,15 @@ class BarangMasukService
         }
     }
 
-    public function getBarangMasukSebelumnya($produkId)
+    //    getBarangMasuk
+    public function getBarangMasuk()
     {
+        return $this->barangMasukRepository->getBarangMasuk();
+    }
+
+    // get barang masuk today
+    public function getBarangMasukToday()
+    {
+        return $this->barangMasukRepository->getBarangMasukToday();
     }
 }

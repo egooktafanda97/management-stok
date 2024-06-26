@@ -48,6 +48,7 @@ class ProdukSeeder extends Seeder
                     'satuan_stok_id' => Satuan::PCS
                 ],
             ]))
+            ->addOns(["harga_jual_produk" => 10000])
             ->create();
 
         // tambahkan unit harga
@@ -119,6 +120,7 @@ class ProdukSeeder extends Seeder
                     'satuan_stok_id' => Satuan::PCS
                 ],
             ]))
+            ->addOns(["harga_jual_produk" => 20000])
             ->create();
 
         // tambahkan unit harga

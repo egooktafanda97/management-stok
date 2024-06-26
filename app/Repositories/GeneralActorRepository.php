@@ -26,4 +26,52 @@ class GeneralActorRepository extends BaseRepository
         $this->data = array_filter($request, fn ($value) => !is_null($value));
         return $this;
     }
+
+    // /getPelanggan
+    public function getPelanggan($actorService)
+    {
+        return $this->model
+            ->where('agency_id', $actorService->agency()->id)
+            ->with($this->model::withAll())
+            ->orderBy('id', 'desc')
+            ->paginate(20);
+    }
+
+    // getPelangganById
+    public function getPelangganById($id, $actorService)
+    {
+        return $this->model
+            ->where('agency_id', $actorService->agency()->id)
+            ->with($this->model::withAll())
+            ->first();
+    }
+
+    // searchGeneralActor
+    public function searchGeneralActor($search, $actorService)
+    {
+        return $this->model
+            ->where('agency_id', $actorService->agency()->id)
+            ->where(function ($query) use ($search) {
+                $query->where('nama', 'like', '%' . $search . '%')
+                    ->orWhere('oncard_account_number', 'like', '%' . $search . '%');
+            })
+            ->with($this->model::withAll())
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+    }
+
+    // searchGeneralActorNopaginate
+    public function searchGeneralActorNopaginate($search, $actorService)
+    {
+        return $this->model
+            ->where('agency_id', $actorService->agency()->id)
+            ->where(function ($query) use ($search) {
+                $query->where('nama', 'like', '%' . $search . '%')
+                    ->orWhere('oncard_account_number', 'like', '%' . $search . '%');
+            })
+            ->with($this->model::withAll())
+            ->take(10)
+            ->orderBy('id', 'desc')
+            ->get();
+    }
 }

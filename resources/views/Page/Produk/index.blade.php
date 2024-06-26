@@ -16,13 +16,15 @@
                 </div>
                 <div class="ms-auto">
                     <div class="btn-group">
-                        <a class="btn btn-success" href="/produk/tambah"><i class='bx bx-plus-circle'></i> TAMBAH
-                            DATA</a>
+                        <a class="btn btn-success" href="/produk/tambah">
+                            <i class='bx bx-plus-circle'></i>
+                            TAMBAH DATA
+                        </a>
                     </div>
                 </div>
             </div>
             <!--end breadcrumb-->
-            <h6 class="mb-0 text-uppercase">Data Produk Buah</h6>
+            <h6 class="mb-0 text-uppercase">Data Produk</h6>
             <hr />
             <div class="card">
                 <div class="card-body">
@@ -30,9 +32,9 @@
                         <table class="table table-striped table-bordered" id="example" style="width:100%">
                             <thead>
                                 <tr>
+                                    <th>No</th>
                                     <th>NAMA</th>
                                     <th>JENIS</th>
-                                    <th>SUPPLIER</th>
                                     <th>STOK</th>
                                     <th>DESKRIPSI</th>
                                     <th>GAMBAR</th>
@@ -40,21 +42,23 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($produk as $key => $produk)
+                                @foreach ($produk as $key => $produks)
+                                    {{-- @dd(); --}}
                                     <tr>
-                                        <td>{{ $produk->nama_produk }}</td>
-                                        <td>{{ $produk->jenisProduk->nama_jenis_produk }}</td>
-                                        <td>{{ $produk->supplier->nama_supplier ?? '' }}</td>
-                                        <td>{{ $produk->stok }}</td>
-                                        <td>{{ $produk->deskripsi }}</td>
+                                        <td> {{ ($produk->currentPage() - 1) * $produk->perPage() + $loop->iteration }}
+                                        </td>
+                                        <td>{{ $produks->name }}</td>
+                                        <td>{{ $produks->jenisProduk->name }}</td>
+                                        <td>{{ $produks->stok->jumlah ?? 0 }}
+                                            {{ $produks->satuanStok->jenisSatuan->name ?? '' }}
+                                        </td>
+                                        <td>{{ $produks->deskripsi }}</td>
                                         <td>
-
                                             <button class="btn btn-sm btn-outline-primary  px-5"
                                                 data-bs-target="#exampleModal{{ $key }}" data-bs-toggle="modal"
                                                 type="button">
                                                 <i class='bx bx-bullseye mr-1'></i>Lihat Gambar
                                             </button>
-                                            <!-- Modal -->
                                             <div aria-hidden="true" aria-labelledby="exampleModalLabel{{ $key }}"
                                                 class="modal fade" id="exampleModal{{ $key }}" tabindex="-1">
                                                 <div class="modal-dialog">
@@ -62,13 +66,13 @@
                                                         <div class="modal-header">
                                                             <h5 class="modal-title"
                                                                 id="exampleModalLabel{{ $key }}">Gambar Produk:
-                                                                {{ $produk->nama }}</h5>
+                                                                {{ $produks->nama }}</h5>
                                                             <button aria-label="Close" class="btn-close"
                                                                 data-bs-dismiss="modal" type="button"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <img alt="{{ $produk->nama }}" class="img-fluid"
-                                                                src="{{ asset($produk->gambar) }}">
+                                                            <img alt="{{ $produks->nama }}" class="img-fluid"
+                                                                src="{{ asset($produks->gambar) }}">
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button class="btn btn-secondary" data-bs-dismiss="modal"
@@ -79,13 +83,18 @@
                                             </div>
                                         </td>
                                         <td>
+                                            <a class="btn btn-sm btn-info text-white"
+                                                href="{{ url('produk/addons/' . $produks->id) }}"
+                                                title="Lengkapi data produk">
+                                                <i class="fadeIn animated bx bx-layer-plus"></i>
+                                            </a>
                                             <a class="btn btn-sm btn-primary"
-                                                href="{{ url('produk/edit', ['id' => $produk->id]) }}"><i
+                                                href="{{ url('produk/edit', ['id' => $produks->id]) }}"><i
                                                     class='bx bx-pencil'></i></a>
                                             <button class="btn btn-sm btn-danger btn-delete"
-                                                data-id="{{ $produk->id }}"><i class='bx bx-trash'></i></button>
-                                            <form action="{{ url('produk/hapus', ['id' => $produk->id]) }}"
-                                                id="delete-form-{{ $produk->id }}" method="GET" style="display: none;">
+                                                data-id="{{ $produks->id }}"><i class='bx bx-trash'></i></button>
+                                            <form action="{{ url('produk/hapus', ['id' => $produks->id]) }}"
+                                                id="delete-form-{{ $produks->id }}" method="GET" style="display: none;">
                                                 @csrf
                                             </form>
                                         </td>
@@ -97,7 +106,6 @@
                                 <tr>
                                     <th>NAMA</th>
                                     <th>JENIS</th>
-                                    <th>SUPPLIER</th>
                                     <th>STOK</th>
                                     <th>DESKRIPSI</th>
                                     <th>GAMBAR</th>
@@ -105,6 +113,10 @@
                                 </tr>
                             </tfoot>
                         </table>
+                        {{-- paginate --}}
+                        <div class="text-end w-100 align-end">
+                            {!! $produk->links('pagination::bootstrap-4') !!}
+                        </div>
                     </div>
                 </div>
             </div>

@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Constant\Status;
+use App\Dtos\KonversiSatuanDTOs;
 use App\Dtos\ProdukDTOs;
+use App\Dtos\UnitPriecesDTOs;
 use App\Models\Produk;
 use App\Repositories\ProdukConfigRepository;
 use App\Repositories\ProdukRepository;
@@ -12,11 +14,20 @@ use Illuminate\Support\Facades\DB;
 class ProdukService
 {
     private ProdukDTOs $produkDTOs;
+    private $hargaJualProduk;
+
+    public function addOns(array $data)
+    {
+        $this->hargaJualProduk = $data['harga_jual_produk'];
+        return $this;
+    }
 
     public function __construct(
         public ActorService $actorService,
         public ProdukRepository $produkRepository,
-        public ProdukConfigRepository $produkConfigRepository
+        public ProdukConfigRepository $produkConfigRepository,
+        public KonversiSatuanService $konversiSatuanService,
+        public UnitPriecesService $unitPriecesService
     ) {
     }
 
@@ -54,6 +65,22 @@ class ProdukService
             if (!$prod) {
                 throw new \Exception("Create produk failed");
             }
+            // tambahkan unit harga
+            $this->unitPriecesService->fromCreatd(UnitPriecesDTOs::fromArray([
+                "produks_id" => $prod->id,
+                "name" => "pcs", // nama untit harga mmisal 1 renteng dll.
+                "priece" => $this->hargaJualProduk, // harga jual
+                "jenis_satuan_jual_id" =>  $dto->satuanStok->getSatuanStokId(),
+                "diskon" => 0, // diskon 3%
+            ]))
+                ->store();
+            # satuan stok pcs to pcs
+            $this->konversiSatuanService->fromDTOs(KonversiSatuanDTOs::fromArray([
+                'produks_id' => $prod->id,
+                'satuan_id' => $conf->id,
+                'satuan_konversi_id' => $dto->satuanStok->getSatuanStokId(),
+                'nilai_konversi' => (float) 1,
+            ]))->create();
             DB::commit();
             return ProdukDTOs::fromArray(collect($prod->toArray())->merge(
                 ['satuan_stok' => $conf->toArray()]
@@ -79,8 +106,8 @@ class ProdukService
             ]));
 
             $created =  $this->produkRepository
-                ->setId($id)
                 ->transformer($dto->trasformer())
+                ->setId($id)
                 ->validate()
                 ->save();
             $dto->setId($created->id);
@@ -137,6 +164,63 @@ class ProdukService
                 ->save();
             if (!$data) {
                 throw new \Exception("Update satuan stok produk failed");
+            }
+            return $data;
+        } catch (\Throwable $th) {
+            throw new \Exception('prod : ' . $th->getMessage());
+        }
+    }
+
+    // get produk gudang
+    public function getProdukGudang(): ProdukDTOs
+    {
+        try {
+            $data =  $this->produkRepository
+                ->find($this->actorService->gudang()->id);
+            if (!$data) {
+                throw new \Exception("Get produk gudang failed");
+            }
+            return new ProdukDTOs($data);
+        } catch (\Throwable $th) {
+            throw new \Exception('prod : ' . $th->getMessage());
+        }
+    }
+
+    // getPaginate
+    public function getPaginate(int $limit = 10)
+    {
+        try {
+            $data =  $this->produkRepository
+                ->getPaginate(function ($q) {
+                    return $q->where('agency_id', $this->actorService->agency()->id);
+                }, $limit);
+            if (!$data) {
+                throw new \Exception("Get produk paginate failed");
+            }
+            return $data;
+        } catch (\Throwable $th) {
+            throw new \Exception('prod : ' . $th->getMessage());
+        }
+    }
+
+    public function getProdukById($id)
+    {
+        return $this->produkRepository->findWhereWith(function ($q) use ($id) {
+            return $q->whereId($id);
+        }, $this->produkRepository->model::allWith());
+    }
+
+    // searchProduk
+    public function searchProduk($search, $limit = 10)
+    {
+        try {
+            $this->produkRepository->Inject([
+                'unitPriecesRepository' => $this->unitPriecesService->unitPriecesRepository
+            ]);
+            $data =  $this->produkRepository
+                ->searchProduk($search, $limit);
+            if (!$data) {
+                throw new \Exception("Search produk failed");
             }
             return $data;
         } catch (\Throwable $th) {

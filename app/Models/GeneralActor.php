@@ -24,7 +24,6 @@ class GeneralActor extends Model
 
     protected $casts = [
         'sync_date' => 'date',
-        'detail' => 'array',
     ];
 
     /**
@@ -43,6 +42,12 @@ class GeneralActor extends Model
         return $this->belongsTo(User::class);
     }
 
+    // RELATION DEBT USERS
+    public function debtUsers()
+    {
+        return $this->belongsTo(DebtUsers::class, 'user_id', 'user_debt_id');
+    }
+
     public static function rules($id = null)
     {
         return [
@@ -55,6 +60,14 @@ class GeneralActor extends Model
             'user_type' => (empty($id) ? 'required|' : 'nullable|') . 'in:siswa,general,merchant,agency,owner',
             'sync_date' => 'nullable|date',
             'detail' => 'nullable|string',
+        ];
+    }
+
+    public static function withAll()
+    {
+        return [
+            'agency',
+            'user',
         ];
     }
 }

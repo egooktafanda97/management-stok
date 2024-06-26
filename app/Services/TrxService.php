@@ -35,13 +35,17 @@ class TrxService
      */
     public function fromDTOs(TransactionDTOs $transactionDTOs): self
     {
-        $trxDtos = $this->tcs->setUp(
-            transactionDTOs: $transactionDTOs,
-            actorService: $this->actorService,
-            pelangganId: $transactionDTOs->getOrders()['pelanggan_id']
-        );
-        $this->trxdtos = $trxDtos->tDTOs;
-        return $this;
+        try {
+            $trxDtos = $this->tcs->setUp(
+                transactionDTOs: $transactionDTOs,
+                actorService: $this->actorService,
+                pelangganId: $transactionDTOs->getOrders()['pelanggan_id']
+            );
+            $this->trxdtos = $trxDtos->tDTOs;
+            return $this;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
@@ -130,6 +134,7 @@ class TrxService
 
     public function payment()
     {
+
         try {
             $getPayType = $this
                 ->payTypes
@@ -154,9 +159,21 @@ class TrxService
                         total: ($userDebs?->getTotal() ?? 0) + $this->tcs->tDTOs->getSubTotal()
                     )
                 )
-                ->create();
+                ->createForTrx();
         } catch (\Throwable $th) {
             throw new \Exception('debs service error:' . $th->getMessage());
         }
+    }
+
+    public function fackture($invoice)
+    {
+        $readonly = $this->trxRepository->findByInvoiceNumber(invoiceNumber: $invoice);
+        return $readonly;
+    }
+
+    // history
+    public function history()
+    {
+        return $this->trxRepository->history($this->actorService);
     }
 }

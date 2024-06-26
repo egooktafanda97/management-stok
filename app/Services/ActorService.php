@@ -12,6 +12,7 @@ use App\Repositories\GeneralActorRepository;
 use App\Repositories\GudangRepository;
 use App\Repositories\KasirRepository;
 use App\Repositories\UserRepository;
+use Illuminate\Validation\UnauthorizedException;
 
 class ActorService
 {
@@ -36,6 +37,8 @@ class ActorService
                 ->first();
         }
         $authUser = auth()->user();
+        if (!auth()->user()) throw new UnauthorizedException("Unauthorized");
+
         if ($authUser->hasRole("agency")) {
             return  $this->agencyRepository->model->where('user_id', $authUser->id)
                 ->with("user")
@@ -91,7 +94,6 @@ class ActorService
                 $userAuthId = auth()->user()->id;
                 $usr =  User::find($userAuthId)
                     ->gudang();
-                dd($usr);
                 return $this->gudangRepository->model::where('user_id', $usr->id)
                     ->with("user")
                     ->first();

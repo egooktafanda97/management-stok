@@ -52,6 +52,12 @@ class GeneralActorService
                 ->setId($this->generalActor->getId() ?? null)
                 ->validate()
                 ->save();
+            if ($this->generalActor->getId())
+                $this->userRepository->update($generalActor->user_id, [
+                    "nama" => $this->generalActor->nama,
+                    "username" => $this->generalActor->user->username,
+                    ...!empty($this->generalActor->user->password) ? ["password" => $this->generalActor->user->password] : [],
+                ]);
             DB::commit();
             return $this->generalActor
                 ->setId($generalActor->id)
@@ -60,5 +66,27 @@ class GeneralActorService
             DB::rollBack();
             throw $th;
         }
+    }
+
+    // getPelanggan
+    public function getPelanggan()
+    {
+        return $this->generalActorRepository->getPelanggan($this->actor);
+    }
+    // getpelangganById
+    public function getPelangganById($id)
+    {
+        return $this->generalActorRepository->getPelangganById($id, $this->actor);
+    }
+
+    //searchGeneralActor
+    public function searchGeneralActor($search)
+    {
+        return $this->generalActorRepository->searchGeneralActor($search, $this->actor);
+    }
+    // searchGeneralActor nopaginate
+    public function searchGeneralActorNopaginate($search)
+    {
+        return $this->generalActorRepository->searchGeneralActorNopaginate($search, $this->actor);
     }
 }

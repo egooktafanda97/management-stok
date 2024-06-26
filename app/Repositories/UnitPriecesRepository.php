@@ -54,4 +54,20 @@ class UnitPriecesRepository extends BaseRepository
     {
         return $this->model->where('jenis_satuan_jual_id', $jenisSatuanJualId)->where('produks_id', $produkId)->first();
     }
+
+    // getUnitPrieces by produk id
+    public function getUnitPriecesByProdukId($unit, $produkId)
+    {
+        return $this->model->where('produks_id', $produkId)
+            ->where('jenis_satuan_jual_id', $unit)
+            ->first();
+    }
+
+    // findByProdukIdPaginate
+    public function findByProdukIdPaginate($prodId, $limit = 10)
+    {
+        return $this->model->where('produks_id', $prodId)
+            ->with(["jenisSatuanJual"])
+            ->paginate($limit);
+    }
 }

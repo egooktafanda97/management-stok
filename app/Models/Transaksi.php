@@ -69,6 +69,39 @@ class Transaksi extends Model
     {
         return $this->belongsTo(Status::class, 'status_id');
     }
+
+    // transaksi detail
+    public function transaksiDetail()
+    {
+        return $this->hasMany(TrxDetail::class, 'transaksi_id');
+    }
+
+    // buyer
+    public function buyer()
+    {
+        return $this->belongsTo(GeneralActor::class, 'user_buyer_id', 'user_id');
+    }
+
+    // allWith
+    public static function allWith()
+    {
+        return [
+            'agency',
+            'gudang',
+            'kasir',
+            'userKasir',
+            'buyer' => function ($query) {
+                $query->with('user');
+            },
+            'invoice',
+            'paymentType',
+            'transaksiDetail' => function ($query) {
+                $query->with(TrxDetail::allWith());
+            },
+            'status'
+        ];
+    }
+
     public static function rules($id = null)
     {
         return [
