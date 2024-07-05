@@ -5,10 +5,17 @@ namespace App\Repositories;
 use App\Contract\AttributesFeature\Attributes\Repository;
 use App\Dtos\ProdukDTOs;
 use App\Models\Produk;
+use App\Services\ActorService;
 
 #[Repository(model: Produk::class)]
 class ProdukRepository extends BaseRepository
 {
+    public ActorService $actor;
+
+    public function setActor($actors): void
+    {
+        $this->actor = $actors;
+    }
 
     public UnitPriecesRepository $unitPriecesRepository;
 
@@ -40,8 +47,11 @@ class ProdukRepository extends BaseRepository
     {
         $this->setRelationWith($this->model::allWith());
         $items = $this->search(callback: function ($qury) use ($search) {
-            return $qury->where('name', 'like', "%$search%")
-                ->orWhere('barcode', $search);
+            return $qury->where(function ($queryes) use ($search) {
+                return $queryes->where('name', 'like', "%$search%")
+                    ->orWhere('barcode', $search);
+            })
+                ->where("gudang_id", $this->actor->gudang()->id);
         }, limit: $limit);
         return $items->map(function ($item) {
             $initialPriece = $this->getInitPrice($item->id);

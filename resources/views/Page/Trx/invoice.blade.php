@@ -174,7 +174,7 @@
                 <th class="heading name">Item</th>
                 <th class="heading qty">Qty</th>
                 <th class="heading discount">Price</th>
-                <th class="heading amount">Discount</th>
+                {{--<th class="heading amount">Discount</th>--}}
                 <th class="heading amount">Amount</th>
             </tr>
         </thead>
@@ -183,16 +183,16 @@
             @foreach ($trx->transaksiDetail as $item)
                 <tr>
                     <td>{{ $item->produk->name ?? '' }}</td>
-                    <td>{{ $item->jumlah }} {{ $item->satuan->name ?? '' }}</td>
+                    <td width="40">{{ $item->jumlah }} {{ $item->satuan->name ?? '' }}</td>
                     <td class="price">{{ 'Rp. ' . number_format($item->unitPrice->priece) }}</td>
-                    <td class="price">
+                    {{--<td class="price">
                         {{ 'Rp. ' .
                             number_format(
                                 $item->unitPrice->priece *
                                     $item->jumlah *
                                     (isset($item->unitPrice->diskon) && $item->unitPrice->diskon > 0 ? $item->unitPrice->diskon / 100 : 0),
                             ) }}
-                    </td>
+                    </td>--}}
                     <td class="price">{{ 'Rp. ' . number_format($item->total) }}</td>
                 </tr>
             @endforeach
@@ -217,18 +217,18 @@
     </table>
     <section>
         <p>
-            Paid by :
+            Payment Method :
             <span>
-                {{ $trx->paymentType->name ?? '' }}
+                {{ $trx->paymentType->name ?? '' }} Services
             </span>
         </p>
         <p style="text-align:center">
-            Terimakasih Telah Berbelanja
+            Terimakasih telah berbelanja di
         </p>
     </section>
     <footer style="text-align:center">
-        <p>{{ $trx->gudang->nama }}</p>
-        <p>www.{{ $trx->gudang->nama }}.in</p>
+        <p><b>{{ $trx->gudang->nama }}</b></p>
+        {{--<p>www.{{ $trx->gudang->nama }}.in</p>--}}
     </footer>
     <script>
         window.print()

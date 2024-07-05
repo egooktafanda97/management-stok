@@ -6,7 +6,6 @@ use App\Contract\AttributesFeature\Attributes\Rules;
 use App\Models\Kasir;
 use App\Services\ActorService;
 use App\Services\KasirService;
-use App\Services\TokoService;
 use Illuminate\Http\Request;
 use TaliumAttributes\Collection\Controller\Controllers;
 use TaliumAttributes\Collection\Controller\RestController;

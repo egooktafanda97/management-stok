@@ -15,6 +15,7 @@ class AgencyRepository extends BaseRepository
             'user_id' => $data['user_id'] ?? null,
             'oncard_instansi_id' => $data['oncard_instansi_id'] ?? null,
             'kode_instansi' => $data['kode_instansi'] ?? null,
+            'apikeys' => $data['apikeys'] ?? null,
             'nama' => $data['nama'] ?? null,
             'alamat' => $data['alamat'] ?? null,
             'status_id' => $data['status_id'] ?? null

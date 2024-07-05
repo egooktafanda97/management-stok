@@ -77,7 +77,7 @@ class ProdukService
             # satuan stok pcs to pcs
             $this->konversiSatuanService->fromDTOs(KonversiSatuanDTOs::fromArray([
                 'produks_id' => $prod->id,
-                'satuan_id' => $conf->id,
+                'satuan_id' => $conf->satuan_stok_id,
                 'satuan_konversi_id' => $dto->satuanStok->getSatuanStokId(),
                 'nilai_konversi' => (float) 1,
             ]))->create();
@@ -158,8 +158,8 @@ class ProdukService
     {
         try {
             $data =  $this->produkConfigRepository
-                ->setId($id)
                 ->transformer($data)
+                ->setId($id)
                 ->validate()
                 ->save();
             if (!$data) {
@@ -192,7 +192,8 @@ class ProdukService
         try {
             $data =  $this->produkRepository
                 ->getPaginate(function ($q) {
-                    return $q->where('agency_id', $this->actorService->agency()->id);
+                    return $q->where('agency_id', $this->actorService->agency()->id)
+                        ->where("gudang_id", $this->actorService->gudang()->id);
                 }, $limit);
             if (!$data) {
                 throw new \Exception("Get produk paginate failed");
@@ -217,6 +218,7 @@ class ProdukService
             $this->produkRepository->Inject([
                 'unitPriecesRepository' => $this->unitPriecesService->unitPriecesRepository
             ]);
+            $this->produkRepository->setActor($this->actorService);
             $data =  $this->produkRepository
                 ->searchProduk($search, $limit);
             if (!$data) {

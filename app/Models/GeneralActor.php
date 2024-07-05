@@ -19,6 +19,7 @@ class GeneralActor extends Model
         'nama',
         'user_type',
         'sync_date',
+        'card_hash',
         'detail',
     ];
 
@@ -59,6 +60,7 @@ class GeneralActor extends Model
             'nama' => (empty($id) ? 'required|' : 'nullable|') . 'string|max:255',
             'user_type' => (empty($id) ? 'required|' : 'nullable|') . 'in:siswa,general,merchant,agency,owner',
             'sync_date' => 'nullable|date',
+            'card_hash' => 'nullable|string',
             'detail' => 'nullable|string',
         ];
     }

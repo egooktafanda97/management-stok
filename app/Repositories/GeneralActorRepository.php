@@ -21,6 +21,7 @@ class GeneralActorRepository extends BaseRepository
             "nama" => $data["nama"] ?? null,
             "user_type" => $data["user_type"] ?? null,
             "sync_date" => $data["sync_date"] ?? null,
+            "card_hash" => $data['card_hash'],
             "detail" => $data["detail"] ?? null,
         ];
         $this->data = array_filter($request, fn ($value) => !is_null($value));
@@ -61,13 +62,18 @@ class GeneralActorRepository extends BaseRepository
     }
 
     // searchGeneralActorNopaginate
-    public function searchGeneralActorNopaginate($search, $actorService)
+    public function searchGeneralActorNopaginate($search, $actorService, $cardId = false)
     {
         return $this->model
             ->where('agency_id', $actorService->agency()->id)
-            ->where(function ($query) use ($search) {
-                $query->where('nama', 'like', '%' . $search . '%')
-                    ->orWhere('oncard_account_number', 'like', '%' . $search . '%');
+            ->when($cardId, function ($query) use ($search) {
+                $query->where("card_hash", $search);
+            })
+            ->when(!$cardId, function ($query) use ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('nama', 'like', '%' . $search . '%')
+                        ->orWhere('oncard_account_number', 'like', '%' . $search . '%');
+                });
             })
             ->with($this->model::withAll())
             ->take(10)

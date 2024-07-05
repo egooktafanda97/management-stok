@@ -18,10 +18,16 @@ class DebtDetailUsersService
     public function fromDTOs(DebtDetailUserDTOs $debtDetailUserDTOs): self
     {
         try {
+            $kasir = '';
+            try {
+                $kasir = $this->actorService->kasir()->id ?? null;
+            } catch (\Throwable $th) {
+                $kasir = null;
+            }
             $this->debtDetailUserDTOs = $debtDetailUserDTOs
                 ->setAgencyId($this->actorService->agency()->id)
                 ->setGudangId($this->actorService->gudang()->id)
-                ->setUserKasirId($this->actorService->kasir()->id);
+                ->setUserKasirId($kasir ?? null);
             return $this;
         } catch (\Throwable $th) {
             throw $th;

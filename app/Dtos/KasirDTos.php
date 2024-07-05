@@ -12,28 +12,28 @@ class KasirDTos extends BaseDTOs
         public ?int $id = null,
 
         #[Setter] #[Getter]
-        public $agency_id,
+        public $agency_id = null,
 
         #[Setter] #[Getter]
-        public $user_id,
+        public $user_id = null,
 
         #[Setter] #[Getter]
-        public $gudang_id,
+        public $gudang_id = null,
 
         #[Setter] #[Getter]
-        public $nama,
+        public $nama = null,
 
         #[Setter] #[Getter]
-        public $alamat,
+        public $alamat = null,
 
         #[Setter] #[Getter]
-        public $telepon,
+        public $telepon = null,
 
         #[Setter] #[Getter]
-        public $deskripsi,
+        public $deskripsi = null,
 
         #[Setter] #[Getter]
-        public $saldo,
+        public $saldo = null,
     ) {
         parent::__construct();
     }

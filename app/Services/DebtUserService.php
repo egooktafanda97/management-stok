@@ -65,6 +65,7 @@ class DebtUserService
             $usDebs = $this->debtUserRepository->findWhere(obj: function ($query) {
                 return $query->where('user_debt_id', $this->DebtUsersDTOs->getUserDebtId());
             });
+
             // dd($usDebs, $this->DebtUsersDTOs->getUserDebtId());
             $debs =  $this->debtUserRepository
                 ->setId($usDebs->id ?? null)

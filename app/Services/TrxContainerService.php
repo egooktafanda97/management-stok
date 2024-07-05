@@ -91,6 +91,7 @@ class TrxContainerService
             $this->setTransaction();
             $this->setTroli();
             $this->sumSubTotal();
+            $this->setStokUpdate();
             return $this;
         } catch (\Throwable $th) {
             log::error('trx container setUp()' . $th->getMessage());
@@ -299,6 +300,8 @@ class TrxContainerService
         if ($this->tDTOs->getOrders()['payment_type_id'] == PayType::CASH) {
             return $this->tDTOs->getOrders()['total_customer_money'] >= $this->tDTOs->getSubTotal();
         } else if ($this->tDTOs->getOrders()['payment_type_id'] == PayType::DEBS) {
+            return true;
+        } else if ($this->tDTOs->getOrders()['payment_type_id'] == PayType::ONCARD) {
             return true;
         }
     }

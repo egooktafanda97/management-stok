@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Constant\Status;
 use App\Models\User;
+use App\Services\ActorService;
 use App\Services\GudangService;
+use App\Services\PaymentApiKeyService;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 use TaliumAttributes\Collection\Controller\Controllers;
+use TaliumAttributes\Collection\Controller\RestController;
 use TaliumAttributes\Collection\Rutes\Get;
 use TaliumAttributes\Collection\Rutes\Group;
 use TaliumAttributes\Collection\Rutes\Post;
@@ -18,7 +21,9 @@ class GudangController extends Controller
 {
 
     public function __construct(
-        public GudangService $gudangService
+        public GudangService $gudangService,
+        public ActorService $actorService,
+        public PaymentApiKeyService $paymentApiKeyService
     ) {
     }
 
@@ -64,6 +69,51 @@ class GudangController extends Controller
         } catch (\Throwable $th) {
             Alert::error('Gagal', 'Gagal menambahkan gudang');
             return redirect()->back();
+        }
+    }
+
+    // {
+    //     "name": "warehouse",
+    //     "address": "pulogadung",
+    //     "phone": "08123456789",
+    //     "username": "warehouse",
+    //     "email": "warehouse@oncard.id",
+    //     "password": "password"
+    // }
+    #[Post("create_new_account")]
+    #[RestController()]
+    public function createNewUser(Request $request)
+    {
+        try {
+            $oncardkey = $request->header("oncard-key");
+            if (empty("oncard-key"))
+                throw new \Exception("what are you?", 403);
+
+            if (empty($request->header("api-key")))
+                throw new \Exception("what are you?", 403);
+
+            $userWithKey = $this->actorService->getAgencyWithApiKeys($request->header("api-key"));
+
+            if (!$userWithKey)
+                throw new \Exception("what are you?", 403);
+
+            if ($oncardkey == env("ONCARDAPP")) {
+                auth()->login($userWithKey->user);
+                $gudang = $this->gudangService->create([
+                    "username" => $request->username,
+                    "password" => $request->password,
+                    "nama" => $request->name,
+                    "alamat" => $request->alamat,
+                    "telepon" => $request->telepon,
+                    "deskripsi" => $request->deskripsi,
+                ]);
+                if (!$this->paymentApiKeyService->generate($request->apikeys, $gudang))
+                    throw new \Exception("created api error", 403);
+                return response()->json(["success"], 200);
+            }
+            throw new \Exception("what are you?", 403);
+        } catch (\Throwable $th) {
+            return response()->json($th->getMessage());
         }
     }
 

@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Constant\UserType;
 use App\Dtos\GeneralActorDTOs;
 use App\Dtos\UsersDTOs;
+use App\Models\Keyvendorpayment;
 use Illuminate\Http\Request;
 use App\Models\Pelanggan;
 use App\Services\ActorService;
 use App\Services\GeneralActorService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -117,8 +119,40 @@ class PelangganController extends Controller
     #[RestController(middleware: ['auth:api'])]
     public function searchNopaginate(Request $request)
     {
-        $search = request('search');
-        $search = $this->generalActorService->searchGeneralActorNopaginate($search);
-        return response()->json($search, 200);
+
+        $search = request('q');
+        $cardSerach = (bool) request("card") == "false" || request("card") == false ? false : true;
+        $querySearch = $this->generalActorService->searchGeneralActorNopaginate($search, $cardSerach);
+        if (count($querySearch) == 0 && !empty($cardSerach) && $cardSerach == true && strlen($search) >= 5) {
+            $oncard = env("ONCARDURLAPP");
+            $apiKey = Keyvendorpayment::where("app", 'oncard')->where("gudang_id", $this->actorService->gudang()->id)->first();
+            $requestUsers = Http::withHeaders([
+                "api-key" => $apiKey->apikeys
+            ])
+                ->get($oncard . "api/v1/oncard/users?search=$search&searchBy=card")
+                ->throw();
+            if ($requestUsers->status() == 200) {
+                $result = $requestUsers->json()['data'];
+                if (count($result)  > 0) {
+                    $result = $result[0];
+                    $this->generalActorService->fromDTOs(new GeneralActorDTOs(
+                        oncard_instansi_id: $result['oncard_instansi_id'],
+                        oncard_user_id: $result['oncard_user_id'],
+                        oncard_account_number: $result['oncard_account_number'],
+                        nama: $result['nama'],
+                        user_type: UserType::General,
+                        sync_date: Carbon::now()->format("Y-m-d"),
+                        detail: "user by oncard",
+                        card_hash: $result['card_hash'],
+                        user: new UsersDTOs(
+                            username: $result['card_hash'],
+                            password: $result['card_hash'],
+                        )
+                    ))->create();
+                    $querySearch = $this->generalActorService->searchGeneralActorNopaginate($search, $cardSerach);
+                }
+            }
+        }
+        return response()->json($querySearch, 200);
     }
 }

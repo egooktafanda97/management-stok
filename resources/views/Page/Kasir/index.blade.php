@@ -4,16 +4,17 @@
         <div class="page-content">
             <!--breadcrumb-->
             <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-                <div class="breadcrumb-title pe-3">Data Kasir</div>
-                <div class="ms-auto">
-                    <div class="btn-group">
-                        <a href="{{ url('kasir/tambah') }}" class="btn btn-success"><i class='bx bx-plus-circle'></i> Tambah
-                            Data</a>
-                    </div>
+            <div class="ps-3">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0 p-0">
+                            <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
+                            </li>
+                            <li aria-current="page" class="breadcrumb-item active">Daftar Kasir</li>
+                        </ol>
+                    </nav>
                 </div>
             </div>
             <!--end breadcrumb-->
-            <h6 class="mb-0 text-uppercase">Data Kasir</h6>
             <hr />
             <div class="card">
                 <div class="card-body">
@@ -24,7 +25,7 @@
                                     <th>Nama</th>
                                     <th>Alamat</th>
                                     <th>Telepon</th>
-                                    <th>Logo</th>
+                                    {{--<th>Logo</th>--}}
                                     <th>Deskripsi</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -35,13 +36,13 @@
                                         <td>{{ $kasir->nama }}</td>
                                         <td>{{ $kasir->alamat }}</td>
                                         <td>{{ $kasir->telepon }}</td>
-                                        <td>
+                                        {{--<td>
                                             @if ($kasir->logo)
                                                 <img src="{{ asset($kasir->logo) }}" alt="Logo" width="50">
                                             @else
                                                 Tidak ada logo
                                             @endif
-                                        </td>
+                                        </td>--}}
                                         <td>{{ $kasir->deskripsi }}</td>
                                         <td>
                                             <a href="{{ url('kasir/edit', ['id' => $kasir->id]) }}"
@@ -62,7 +63,7 @@
                                     <th>Nama</th>
                                     <th>Alamat</th>
                                     <th>Telepon</th>
-                                    <th>Logo</th>
+                                    {{--<th>Logo</th>--}}
                                     <th>Deskripsi</th>
                                     <th>Aksi</th>
                                 </tr>

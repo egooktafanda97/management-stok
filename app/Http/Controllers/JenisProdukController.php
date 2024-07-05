@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Gudang;
 use Illuminate\Http\Request;
 use App\Models\JenisProduk;
 use App\Services\ActorService;
@@ -28,7 +29,8 @@ class JenisProdukController extends Controller
     #[Get("")]
     public function index()
     {
-        $jenisproduk = JenisProduk::all();
+        $gudang = Gudang::where('user_id', auth()->user()->id)->first();
+        $jenisproduk = JenisProduk::where("gudang_id", $gudang->id)->get();
 
         return view('Page.JenisProduk.index', ['jenisproduk' => $jenisproduk]);
     }

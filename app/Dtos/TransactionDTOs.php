@@ -266,4 +266,12 @@ class TransactionDTOs extends BaseDTOs
         $findByInvoce = Transaksi::where('invoice_id', $invoiceId)->first();
         (self::fromModel($findByInvoce))->fromDTOs($this);
     }
+
+    public function toTransactionModelDetai(string $invoiceId)
+    {
+        $findByInvoce = Transaksi::where('invoice_id', $invoiceId)
+            ->with(Transaksi::allWith())
+            ->first();
+        return  $findByInvoce;
+    }
 }

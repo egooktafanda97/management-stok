@@ -28,7 +28,7 @@ class GudangService
                 "role" => Role::GUDANG
             ]), Role::GUDANG);
             if (!$this->actor->agency()) throw new \Exception("Anda tidak memiliki akses");
-            $agency = $this->gudangRepository
+            $gudang = $this->gudangRepository
                 ->transformer(array_merge($data, [
                     "agency_id" => $this->actor->agency()->id,
                     'user_id' => $user->id
@@ -36,10 +36,10 @@ class GudangService
                 ->validate()
                 ->create();
             DB::commit();
-            return $agency;
+            return $gudang;
         } catch (\Throwable $th) {
             DB::rollBack();
-            throw new \Exception($th->getMessage());
+            throw new \Exception('create gudang:' . $th->getMessage());
         }
     }
     // gudang update

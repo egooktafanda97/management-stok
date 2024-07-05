@@ -22,6 +22,7 @@ use App\Services\StatusService;
 use App\Services\SupplierService;
 use App\Services\UnitPriecesService;
 use App\Utils\Helpers;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 use RealRashid\SweetAlert\Facades\Alert;
 use TaliumAttributes\Collection\Controller\Controllers;
@@ -179,12 +180,13 @@ class ProdukController extends Controller
     }
 
     #[Get("search")]
-    #[RestController]
+    #[RestController(middleware: ['auth:api'])]
     public function searchProduk()
     {
         try {
             $search = request()->get('search');
             $produk = $this->produkService->searchProduk($search);
+
             return response()->json($produk);
         } catch (\Throwable $th) {
             return response()->json([]);
@@ -265,6 +267,7 @@ class ProdukController extends Controller
     public function getProduk(ProdukService $produkServiecs, Request $request, $search)
     {
         $produk = $produkServiecs->searchProduk($search);
+
         return response()->json($produk);
     }
 }

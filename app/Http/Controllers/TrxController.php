@@ -12,6 +12,7 @@ use App\Repositories\TrxRepository;
 use App\Services\HttpResponse;
 use App\Services\TrxService;
 use App\Services\UnitPriecesService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use TaliumAttributes\Collection\Controller\Controllers;
 use TaliumAttributes\Collection\Controller\RestController;
@@ -141,26 +142,39 @@ class TrxController extends Controller
     }
 
     // detail history
-    // #[Get('history/{invoice}')]
-    // public function detailHistory($invoice)
-    // {
-    //     return view('Page.Trx.detail', [
-    //         'trx' => $this->trxService->fackture($invoice),
-    //         'items' => $this->trxService->fackture($invoice)->troli,
-    //         "detail" => $this->trxService->detailDTO(collect($this->trxService->fackture($invoice))->toArray()),
-    //         "items" => $this->trxService->ItemsDTO(collect($this->trxService->fackture($invoice))->toArray())
-    //     ]);
-    // }
+    #[Get('history/{invoice}')]
+    public function detailHistory($invoice)
+    {
+        $trx =  $this->trxService->fackture($invoice);
+        return view('Page.Trx.detail', [
+            'trx' => $this->trxService->fackture($invoice),
+            'items' => $this->trxService->fackture($invoice)->transaksiDetail,
+            "detail" => [
+                "Tanggal" => Carbon::parse($trx->tanggal),
+                "Instansi" => $trx->agency->nama ?? '-',
+                "Merchant" => $trx->gudang->nama ?? '-',
+                "Kasir" => $trx->kasir->nama ?? '-',
+                "Metode Pembayaran" => $trx->paymentType->name ?? '-',
+                "Diskon" => $trx->diskon ?? 0,
+                "Total Diskon" => $trx->total_diskon ?? 0,
+                "Tax" => $trx->tax ?? 0,
+                "Tax Deduction" => $trx->tax_deduction ?? 0,
+                "Total Gross" => $trx->total_gross ?? 0,
+                "Sub Total" => $trx->sub_total ?? 0,
+                "Satus" => $trx->status->nama ?? ''
+            ]
+        ]);
+    }
 
     // remove
-    #[Get('remove/{invoice}')]
-    public function remove($invoice)
-    {
-        try {
-            $trx = $this->trxService->remove($invoice);
-            return redirect()->route('trx.history');
-        } catch (\Throwable $th) {
-            return HttpResponse::error($th->getMessage())->code(HttpStatus::HTTP_BAD_REQUEST);
-        }
-    }
+    // #[Get('remove/{invoice}')]
+    // public function remove($invoice)
+    // {
+    //     try {
+    //         $trx = $this->trxService->remove($invoice);
+    //         return redirect()->route('trx.history');
+    //     } catch (\Throwable $th) {
+    //         return HttpResponse::error($th->getMessage())->code(HttpStatus::HTTP_BAD_REQUEST);
+    //     }
+    // }
 }

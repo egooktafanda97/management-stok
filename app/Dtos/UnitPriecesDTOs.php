@@ -13,40 +13,40 @@ class UnitPriecesDTOs extends BaseDTOs
         public ?int $id = null,
 
         #[Setter] #[Getter]
-        public ?int $user_created_id,
+        public ?int $user_created_id = null,
 
         #[Setter] #[Getter]
-        public ?int $agency_id,
+        public ?int $agency_id = null,
 
         #[Setter] #[Getter]
-        public ?int $gudang_id,
+        public ?int $gudang_id = null,
 
         #[Setter] #[Getter]
-        public ?int $produks_id,
+        public ?int $produks_id = null,
 
         #[Setter] #[Getter]
-        public ?string $name,
+        public ?string $name = null,
 
         #[Setter] #[Getter]
-        public ?int $priece,
+        public ?int $priece = null,
 
         #[Setter] #[Getter]
-        public ?float $priece_decimal,
+        public ?float $priece_decimal = null,
 
         // #[Setter] #[Getter]
         // public ?int $jumlah_satan_jual,
 
         #[Setter] #[Getter]
-        public ?int $jenis_satuan_jual_id,
+        public ?int $jenis_satuan_jual_id = null,
 
         #[Setter] #[Getter]
-        public ?int $diskon,
+        public ?int $diskon = null,
 
         #[Setter] #[Getter]
-        public ?int $status_id,
+        public ?int $status_id = null,
 
         #[Setter] #[Getter]
-        public ?int $user_update_id,
+        public ?int $user_update_id = null,
     ) {
         parent::__construct();
     }

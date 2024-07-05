@@ -1,3 +1,11 @@
+<style>
+    .menu-title {
+        font-size:12px!important;
+    }
+    .parent-icon {
+        font-size:15px!important;
+    }
+</style>
 <ul class="metismenu" id="menu">
     <li class="menu-label">MENU</li>
     @role('agency')
@@ -66,14 +74,14 @@
                 <div class="parent-icon">
                     <i class='bx bxs-dollar-circle'></i>
                 </div>
-                <div class="menu-title">HUTANG PELANGGAN</div>
+                <div class="menu-title">HUTANG</div>
             </a>
         </li> --}}
         <li>
             <a href="{{ url('trx/history') }}">
                 <div class="parent-icon"><i class='bx bxs-wallet'></i>
                 </div>
-                <div class="menu-title">HISTORY TRANSAKSI</div>
+                <div class="menu-title">HISTORY</div>
             </a>
         </li>
     @endrole
@@ -82,21 +90,21 @@
         <li>
             <a href="{{ url('trx') }}">
                 <div class="parent-icon">
-                    <i class='bx bxs-notepad'></i>
+                    <i class='bx bx-shopping-bag'></i>
                 </div>
                 <div class="menu-title">KASIR</div>
             </a>
         </li>
         <li>
             <a href="/payment/pay-debs">
-                <div class="parent-icon"><i class='bx bxs-wallet'></i>
+                <div class="parent-icon"><i class='bx bx-file-blank'></i>
                 </div>
-                <div class="menu-title">HUTANG PELANGGAN</div>
+                <div class="menu-title">HUTANG</div>
             </a>
         </li>
         <li>
             <a href="{{ url('trx/history') }}">
-                <div class="parent-icon"><i class='bx bxs-wallet'></i>
+                <div class="parent-icon"><i class='bx bx-history'></i>
                 </div>
                 <div class="menu-title">HISTORY</div>
             </a>
@@ -119,13 +127,14 @@
                 <div class="menu-title">JENIS SATUAN</div>
             </a>
         </li>
-        <li>
+        {{--<li>
             <a href="/rak">
                 <div class="parent-icon"><i class='bx bxl-stack-overflow'></i>
                 </div>
                 <div class="menu-title">RAK</div>
             </a>
         </li>
+        --}}
 
         <li>
             <a href="/paymenttype">

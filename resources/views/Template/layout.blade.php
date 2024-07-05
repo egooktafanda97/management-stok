@@ -19,7 +19,7 @@
     {{-- barer token --}}
     <meta content="{{ $token }}" name="csrf-token">
     <!--favicon-->
-    <link href="{{ asset('admin') }}/assets/images/favicon-32x32.png" rel="icon" type="image/png" />
+    <link href="https://oncard.id/assets/png/icon.png" rel="icon" type="image/png" />
     <!--plugins-->
     <link href="{{ asset('admin') }}/assets/plugins/vectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet" />
     <link href="{{ asset('admin') }}/assets/plugins/simplebar/css/simplebar.css" rel="stylesheet" />
@@ -54,23 +54,34 @@
     {{-- chart --}}
     @yield('style')
     @stack('style')
-    <title>POINT OF SALES - FRUIT STORE</title>
+    <title>Gudang Mitra</title>
+    <style>
+        body {
+            font-size:12px!important;
+        }
+        .card-header {
+            border:none!important;
+        }
+    </style>
 </head>
 
 <body>
     <!--wrapper-->
+    @role('gudang')
     <div class="wrapper">
+    @endrole
+    @role('kasir')
+    <div class="wrapper">
+    @endrole
         <!--sidebar wrapper -->
         <div class="sidebar-wrapper" data-simplebar="true">
             <div class="sidebar-header">
                 <div>
                     <img alt="logo icon" class="logo-icon"
-                        src="https://icon-library.com/images/point-of-sales-icon/point-of-sales-icon-9.jpg">
+                        src="https://oncard.id/assets/png/icon.png" style="width:70px;">
                 </div>
                 <div>
-                    {{-- <h4 class="logo-text">P O S</h4> --}}
-                </div>
-                <div class="toggle-icon ms-auto"><i class='bx bx-arrow-to-left'></i>
+                    {{--<h4 class="logo-text">WAREHOUSE</h4>--}}
                 </div>
             </div>
             <!--navigation-->
@@ -96,7 +107,9 @@
                     </div> --}}
 
                 </nav>
-                <strong class="mr-10">{{ auth()->user()->username }}</strong>
+                <strong class="mr-10" style="margin-right:20px; border-radius:5px; width:150px; background:#ccc; padding:5px; display:flex; gap:10px;">
+                <i class='bx bx-user'></i>
+                {{ auth()->user()->nama }}</strong>
             </div>
         </header>
         <!--end header -->

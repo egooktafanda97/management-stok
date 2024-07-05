@@ -15,28 +15,28 @@ class KonversiSatuanDTOs extends BaseDTOs
         public ?int $id = null,
 
         #[Setter] #[Getter]
-        public ?int $user_created_id,
+        public ?int $user_created_id = null,
 
         #[Setter] #[Getter]
-        public ?int $agency_id,
+        public ?int $agency_id = null,
 
         #[Setter] #[Getter]
-        public ?int $gudang_id,
+        public ?int $gudang_id = null,
 
         #[Setter] #[Getter]
-        public ?int $produks_id,
+        public ?int $produks_id = null,
 
         #[Setter] #[Getter]
-        public ?int $satuan_id,
+        public ?int $satuan_id = null,
 
         #[Setter] #[Getter]
-        public ?int $satuan_konversi_id,
+        public ?int $satuan_konversi_id = null,
 
         #[Setter] #[Getter]
-        public ?float $nilai_konversi,
+        public ?float $nilai_konversi = null,
 
         #[Setter] #[Getter]
-        public ?int $status_id,
+        public ?int $status_id = null,
     ) {
         parent::__construct();
     }

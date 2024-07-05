@@ -5,7 +5,6 @@
         <div class="page-content">
             <!-- Breadcrumb -->
             <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-                <div class="breadcrumb-title pe-3">List Barang Masuk</div>
                 <div class="ms-auto">
                     <div class="btn-group">
                         <a class="btn btn-success" href="{{ url('barangmasuk/tambah') }}">

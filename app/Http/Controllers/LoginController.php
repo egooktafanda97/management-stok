@@ -15,7 +15,7 @@ use TaliumAttributes\Collection\Rutes\Post;
 #[Group(prefix: '')]
 class LoginController extends Controller
 {
-    #[Get("login")]
+    #[Get(["login", ""])]
     public function halamanlogin()
     {
         return view('auth.login');

@@ -85,7 +85,7 @@ class BarangMasukController extends Controller
         return response()->json($this->jenisSatuanService->getByProduk($id));
     }
 
-    #[Post(["", "{id}"])]
+    #[Post(["", "{id}/save"])]
     #[RestController("api", ["auth:api"])]
     public function store(Request $request, $id = null)
     {
@@ -153,46 +153,46 @@ class BarangMasukController extends Controller
     // }
 
     // edit proccess
-    #[Post("edit-proccess")]
-    public function editProccess(Request $request)
-    {
-        try {
-            $this->barangMasukService->initialize([
-                'id' => $request->id,
-                'produks_id' => $request->produks_id,
-                'supplier_id' => $request->supplier_id ?? null,
-                'harga_beli' => $request->harga_beli, // harnga satuan
-                'satuan_beli_id' => $request->satuan_beli_id,
-                'jumlah_barang_masuk' => $request->jumlah_barang_masuk
-            ])->update();
-            Alert::success('Success', 'Barang masuk berhasil diubah!');
-            return redirect('barangmasuk');
-        } catch (\Exception $e) {
-            Alert::error('Error', 'Produk tidak ditemukan: ' . $e->getMessage());
-            return redirect('barangmasuk/edit/' . $request->id);
-        }
-    }
+    // #[Post("edit-proccess")]
+    // public function editProccess(Request $request)
+    // {
+    //     try {
+    //         $this->barangMasukService->initialize([
+    //             'id' => $request->id,
+    //             'produks_id' => $request->produks_id,
+    //             'supplier_id' => $request->supplier_id ?? null,
+    //             'harga_beli' => $request->harga_beli, // harnga satuan
+    //             'satuan_beli_id' => $request->satuan_beli_id,
+    //             'jumlah_barang_masuk' => $request->jumlah_barang_masuk
+    //         ])->update();
+    //         Alert::success('Success', 'Barang masuk berhasil diubah!');
+    //         return redirect('barangmasuk');
+    //     } catch (\Exception $e) {
+    //         Alert::error('Error', 'Produk tidak ditemukan: ' . $e->getMessage());
+    //         return redirect('barangmasuk/edit/' . $request->id);
+    //     }
+    // }
 
-    #[Post("delete-proccess/{id}")]
-    public function destoryProccess($id)
-    {
-        try {
-            $loging = LogBarangMasuk::find($id);
-            $this->barangMasukService->initialize([
-                'id' => $id,
-                'produks_id' => $loging->produks_id,
-                'supplier_id' => $loging->supplier_id ?? null,
-                'harga_beli' => $loging->harga_beli, // harnga satuan
-                'satuan_beli_id' => $loging->satuan_beli_id,
-                'jumlah_barang_masuk' => $loging->jumlah_barang_masuk
-            ])->logProccessDelete();
-            Alert::success('Success', 'Barang masuk berhasil dihapus!');
-            return redirect('barangmasuk');
-        } catch (\Exception $e) {
-            Alert::error('Error', 'Produk tidak ditemukan: ' . $e->getMessage());
-            return redirect('barangmasuk');
-        }
-    }
+    // #[Post("delete-proccess/{id}")]
+    // public function destoryProccess($id)
+    // {
+    //     try {
+    //         $loging = LogBarangMasuk::find($id);
+    //         $this->barangMasukService->initialize([
+    //             'id' => $id,
+    //             'produks_id' => $loging->produks_id,
+    //             'supplier_id' => $loging->supplier_id ?? null,
+    //             'harga_beli' => $loging->harga_beli, // harnga satuan
+    //             'satuan_beli_id' => $loging->satuan_beli_id,
+    //             'jumlah_barang_masuk' => $loging->jumlah_barang_masuk
+    //         ])->logProccessDelete();
+    //         Alert::success('Success', 'Barang masuk berhasil dihapus!');
+    //         return redirect('barangmasuk');
+    //     } catch (\Exception $e) {
+    //         Alert::error('Error', 'Produk tidak ditemukan: ' . $e->getMessage());
+    //         return redirect('barangmasuk');
+    //     }
+    // }
 
 
 

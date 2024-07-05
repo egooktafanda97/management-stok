@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Contract\AttributesFeature\Attributes\Repository;
 use App\Contract\AttributesFeature\Utils\AttributeExtractor;
 use App\Contract\BaseRepositoryInterface;
+use App\Models\Gudang;
 use App\Utils\ErrorResponse;
 use Illuminate\Support\Facades\Validator;
 
@@ -168,7 +169,8 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     public function all()
     {
-        return $this->model->all();
+        $gudang = Gudang::where('user_id', auth()->user()->id)->first();
+        return $this->model->where("gudang_id", $gudang->id ?? "")->get();
     }
 
     public function find($id)
@@ -224,8 +226,8 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     public function getPaginate($callback, $paginate = 10)
     {
-        return $this->model->query(function ($q) use ($callback) {
-            return $callback($this);
+        return $this->model::where(function ($q) use ($callback) {
+            return $callback($q);
         })
             ->with($this->model::allWith() ?? [])
             ->paginate($paginate);

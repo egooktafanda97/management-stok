@@ -37,6 +37,9 @@ class GeneralActorDTOs extends BaseDTOs
         public ?string $sync_date = null,
 
         #[Setter] #[Getter]
+        public ?string $card_hash = null,
+
+        #[Setter] #[Getter]
         public ?string $detail = null,
 
         #[Setter] #[Getter]
@@ -58,6 +61,7 @@ class GeneralActorDTOs extends BaseDTOs
             nama: $data["nama"] ?? null,
             user_type: $data["user_type"] ?? null,
             sync_date: $data["sync_date"] ?? null,
+            card_hash: $data['card_hash'] ?? null,
             detail: $data["detail"] ?? null,
         );
     }
@@ -74,6 +78,7 @@ class GeneralActorDTOs extends BaseDTOs
             "nama" => $this->nama,
             "user_type" => $this->user_type,
             "sync_date" => $this->sync_date,
+            "card_hash" =>  $this->card_hash ?? null,
             "detail" => $this->detail,
             "user" => $this->user?->toArray() ?? null
         ];
@@ -92,6 +97,7 @@ class GeneralActorDTOs extends BaseDTOs
                 nama: $model->nama ?? null,
                 user_type: $model->user_type ?? null,
                 sync_date: $model->sync_date ?? null,
+                card_hash: $model->card_hash ?? null,
                 detail: $model->detail ?? null
             )
         )

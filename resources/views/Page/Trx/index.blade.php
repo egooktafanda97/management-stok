@@ -185,7 +185,7 @@
                                                 style="cursor:pointer" x-on:click="addToProdOrder(prod)">
                                                 <div class="w-10">
                                                     <img alt="Icon"
-                                                        src="https://icon-library.com/images/point-of-sales-icon/point-of-sales-icon-9.jpg">
+                                                        src="https://oncard.id/assets/png/icon.png">
                                                 </div>
 
                                                 <div class="flex-1 pl-2 mr-16">

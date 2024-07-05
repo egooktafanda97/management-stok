@@ -14,6 +14,7 @@ class Agency extends Model
         'user_id',
         'oncard_instansi_id',
         'kode_instansi',
+        'apikeys',
         'nama',
         'alamat',
         'status_id'
@@ -47,6 +48,7 @@ class Agency extends Model
             'user_id' => (!$id ? 'required|' : 'nullable|') . 'exists:users,id',
             'oncard_instansi_id' => (!$id ? 'required|' : 'nullable|') . 'integer',
             'kode_instansi' => (!$id ? 'required|' : 'nullable|') . 'string|max:100|unique:agency,kode_instansi' . ($id ? ",$id" : ''),
+            'apikeys' => 'nullable',
             'nama' => (!$id ? 'required|' : 'nullable|') . 'string|max:100',
             'alamat' => (!$id ? 'required|' : 'nullable|') . 'string',
             'status_id' => (!$id ? 'required|' : 'nullable|') . 'exists:status,id',

@@ -28,6 +28,14 @@ class ActorService
         return auth()->user()->id ?? 1;
     }
 
+
+    public function getAgencyWithApiKeys($apikey)
+    {
+        return $this->agencyRepository->model->where('apikeys', $apikey)
+            ->with("user")
+            ->first();
+    }
+
     //actor used
     public function agency($agencyId = null)
     {

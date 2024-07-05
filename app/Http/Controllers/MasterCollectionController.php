@@ -14,23 +14,23 @@ use TaliumAttributes\Collection\Rutes\Post;
 #[Group(prefix: 'master', middleware: ['auth'])]
 class MasterCollectionController extends Controller
 {
-    public function __construct(
-        public MasterCollectService $masterCollectService
-    ) {
-    }
+    // public function __construct(
+    //     public MasterCollectService $masterCollectService
+    // ) {
+    // }
 
 
-    #[Get('get-master/{master}')]
-    public function get($master)
-    {
-        $data = $this->masterCollectService->$master()->getAll();
-        return response()->json($data, 200);
-    }
+    // #[Get('get-master/{master}')]
+    // public function get($master)
+    // {
+    //     $data = $this->masterCollectService->$master()->getAll();
+    //     return response()->json($data, 200);
+    // }
 
-    #[Get('get-master/{id}/{master}')]
-    public function getId($id, $master)
-    {
-        $data = $this->masterCollectService->$master()->getId($id);
-        return response()->json($data, 200);
-    }
+    // #[Get('get-master/{id}/{master}')]
+    // public function getId($id, $master)
+    // {
+    //     $data = $this->masterCollectService->$master()->getId($id);
+    //     return response()->json($data, 200);
+    // }
 }

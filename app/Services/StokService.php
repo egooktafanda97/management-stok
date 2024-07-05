@@ -33,8 +33,8 @@ class StokService
                 $stoks = $this->stokRepository->update($stok->id, [
                     'jumlah' => $this->stokDTOs->jumlah,
                     'satuan_id' => $this->stokDTOs->satuan_id,
-                    'jumlah_sebelumnya' => $this->stokDTOs->jumlah_sebelumnya ?? $stok->jumlah ?? 0,
-                    'satuan_sebelumnya_id' => $this->stokDTOs->satuan_sebelumnya_id ?? $stok->satuan_id ?? 0,
+                    'jumlah_sebelumnya' =>  $stok->jumlah ?? 0,
+                    'satuan_sebelumnya_id' => $stok->satuan_id ?? 0,
                     'keterangan' => $this->stokDTOs->keterangan,
                 ]);
             } else {

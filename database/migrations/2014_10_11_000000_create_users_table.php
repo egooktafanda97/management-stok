@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('username')->unique();
             $table->string('password');
             $table->string('role')->nullable();
+            $table->string('api_key')->nullable();
             $table->unsignedInteger('status_id');
             $table->foreign('status_id')->references('id')->on('status');
             $table->rememberToken();

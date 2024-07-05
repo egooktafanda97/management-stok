@@ -24,7 +24,8 @@ class TrxService
         private TrxContainerService $tcs,
         private PayTypeTransactionRepository $payTypes,
         private DebtUserService $debtService,
-        public TransactionDetailService $transactionDetailService
+        public TransactionDetailService $transactionDetailService,
+        public OncardPaymentService $oncardPaymentService
     ) {
     }
 
@@ -98,14 +99,18 @@ class TrxService
                         }
                     });
                 });
+
             collect($this->tcs->listStokServiceUpdate)->each(function ($stok) {
                 $stok->updateStok();
             });
+
             $this->trxdtos->setId($trx->id);
-            $this->payment();
-            $this->updateSuccessAllTrx();
-            DB::commit();
-            return $this->trxdtos;
+            if ($this->payment()) {
+                $this->updateSuccessAllTrx();
+                DB::commit();
+                return $this->trxdtos;
+            }
+            throw new \Exception("transaksi gagal", 500);
         } catch (\Throwable $th) {
             DB::rollBack();
             throw new \Exception('trx error:' . $th->getMessage());
@@ -134,7 +139,6 @@ class TrxService
 
     public function payment()
     {
-
         try {
             $getPayType = $this
                 ->payTypes
@@ -142,6 +146,15 @@ class TrxService
             if ($getPayType->id == PayType::DEBS) {
                 $this->debsServicePayment();
             }
+            if ($getPayType->id == PayType::ONCARD) {
+                $this->oncardPaymentService->setUp(
+                    trxDto: $this->trxdtos,
+                    buyerActor: $this->tcs->actorDTOs->getGeneralActor()
+                );
+                if ($this->oncardPaymentService->payment())
+                    return true;
+            }
+            return true;
         } catch (\Throwable $th) {
             throw new \Exception('payment error:' . $th->getMessage());
         }
@@ -164,6 +177,7 @@ class TrxService
             throw new \Exception('debs service error:' . $th->getMessage());
         }
     }
+
 
     public function fackture($invoice)
     {

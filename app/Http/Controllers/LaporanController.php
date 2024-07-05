@@ -36,10 +36,10 @@ class LaporanController extends Controller
 
         return view('page.Laporan.printbarangmasuk', compact('logBarangMasuks', 'start_date', 'end_date'));
     }
-    public function laporanbarangkeluar()
-    {
-        $detailTransaksis = DetailTransaksi::with(DetailTransaksi::withAll())->get();
-        
-        return view('page.Laporan.barangkeluar', compact('detailTransaksis'));
-    }
+    // public function laporanbarangkeluar()
+    // {
+    //     $detailTransaksis = DetailTransaksi::with(DetailTransaksi::withAll())->get();
+
+    //     return view('page.Laporan.barangkeluar', compact('detailTransaksis'));
+    // }
 }

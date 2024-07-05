@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Gudang;
 use Illuminate\Http\Request;
 use App\Models\Supplier;
 use App\Services\ActorService;
@@ -27,8 +28,8 @@ class SupplierController extends Controller
     #[Get("")]
     public function index()
     {
-        $supplier = Supplier::all();
-
+        $gudang = Gudang::where('user_id', auth()->user()->id)->first();
+        $supplier = Supplier::where("gudang_id", $gudang->id)->get();
         return view('Page.Supplier.index', ['supplier' => $supplier]);
     }
 

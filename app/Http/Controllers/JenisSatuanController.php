@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Gudang;
 use Illuminate\Http\Request;
 use App\Models\JenisSatuan;
 use App\Services\ActorService;
@@ -28,7 +29,8 @@ class JenisSatuanController extends Controller
     #[Get("")]
     public function index()
     {
-        $jenissatuan = JenisSatuan::all();
+        $gudang = Gudang::where('user_id', auth()->user()->id)->first();
+        $jenissatuan = JenisSatuan::where("gudang_id", $gudang->id)->get();
         return view('Page.JenisSatuan.index', ['jenissatuan' => $jenissatuan]);
     }
 

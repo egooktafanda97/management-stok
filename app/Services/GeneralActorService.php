@@ -85,8 +85,8 @@ class GeneralActorService
         return $this->generalActorRepository->searchGeneralActor($search, $this->actor);
     }
     // searchGeneralActor nopaginate
-    public function searchGeneralActorNopaginate($search)
+    public function searchGeneralActorNopaginate($search, $cardId = false)
     {
-        return $this->generalActorRepository->searchGeneralActorNopaginate($search, $this->actor);
+        return $this->generalActorRepository->searchGeneralActorNopaginate($search, $this->actor, $cardId);
     }
 }
