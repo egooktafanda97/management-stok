@@ -14,8 +14,7 @@ class KasirService
         public ActorService $actor,
         public UserRepository $userRepository,
         public KasirRepository $kasirRepository
-    ) {
-    }
+    ) {}
     //create
     public function create(array $data)
     {

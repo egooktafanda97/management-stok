@@ -19,8 +19,7 @@ class PaymentController extends Controller
 {
     public function __construct(
         private DebtUserService $debsRepository
-    ) {
-    }
+    ) {}
     #[Get("/")]
     public function index()
     {
@@ -33,7 +32,7 @@ class PaymentController extends Controller
         $getUserDebs = $this->debsRepository->getUserDebs();
         return view('Page.Payment.PaymentDebs', [
             'data' => $getUserDebs,
-            'metode' => PaymentType::all()
+            'metode' => PaymentType::where('status_id', 22)->get(),
         ]);
     }
 

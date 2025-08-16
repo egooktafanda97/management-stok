@@ -12,26 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('histories', function (Blueprint $table) {
-            $table->bigIncrements("id");
+            $table->bigIncrements('id');
             $table->unsignedInteger('agency_id');
-            $table->foreign('agency_id')->references('id')->on('agency');
             $table->unsignedInteger('gudang_id');
-            $table->foreign('gudang_id')->references('id')->on('gudang')->onDelete('cascade');
             $table->unsignedBigInteger('kasir_id')->nullable();
-            $table->foreign('kasir_id')->references('id')->on('kasir')->onDelete('cascade');
             $table->unsignedBigInteger('user_kasir_id')->nullable();
-            $table->foreign('user_kasir_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('user_trx_id')->nullable();
-            $table->foreign('user_trx_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('invoice_id');
-            $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
             $table->date('tanggal');
             $table->integer('jumlah');
-            $table->integer('saldo_awal');
-            $table->integer('saldo_akhir');
-            $table->integer('total');
+            $table->decimal('saldo_awal', 15, 2);
+            $table->decimal('saldo_akhir', 15, 2);
+            $table->decimal('total', 15, 2);
             $table->unsignedInteger('status_id')->default(1);
-            $table->foreign('status_id')->references('id')->on('status')->onDelete('cascade');
             $table->timestamps();
         });
     }

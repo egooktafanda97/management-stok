@@ -1,9 +1,10 @@
 <style>
     .menu-title {
-        font-size:12px!important;
+        font-size: 12px !important;
     }
+
     .parent-icon {
-        font-size:15px!important;
+        font-size: 15px !important;
     }
 </style>
 <ul class="metismenu" id="menu">
@@ -127,7 +128,7 @@
                 <div class="menu-title">JENIS SATUAN</div>
             </a>
         </li>
-        {{--<li>
+        {{-- <li>
             <a href="/rak">
                 <div class="parent-icon"><i class='bx bxl-stack-overflow'></i>
                 </div>
@@ -136,13 +137,13 @@
         </li>
         --}}
 
-        <li>
+        {{-- <li>
             <a href="/paymenttype">
                 <div class="parent-icon"><i class='bx bxs-wallet'></i>
                 </div>
                 <div class="menu-title">PAYMENT TYPE</div>
             </a>
-        </li>
+        </li> --}}
     @endrole
     <li class="menu-label">AUTH</li>
     <li>

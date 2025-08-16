@@ -62,8 +62,7 @@ class TrxContainerService
         public InvoiceService $invoiceService,
         public KonversiSatuanService $konversiSatuanService,
         public StokService $stokService
-    ) {
-    }
+    ) {}
 
 
     public function setUp(TransactionDTOs $transactionDTOs, ActorService $actorService, int $pelangganId): TrxContainerService
@@ -95,29 +94,82 @@ class TrxContainerService
             return $this;
         } catch (\Throwable $th) {
             log::error('trx container setUp()' . $th->getMessage());
-            throw new \Exception($th->getMessage());
+            throw $th;
         }
     }
 
     public function setStokUpdate(): void
     {
         try {
-            foreach ($this->tDTOs->getItemsOrder() as $item) {
+            // Cek apakah itemsOrder tersedia
+            // if (!method_exists($this->tDTOs, 'getItemsOrder') || !is_array($this->tDTOs->getItemsOrder())) {
+            //     throw new \Exception('5000: Data item pesanan tidak valid atau kosong.');
+            // }
+
+            foreach ($this->tDTOs->getItemsOrder() as $index => $item) {
                 try {
-                    $unitPriece = $item['satuan']; // object unit priece
-                    // get stok  konversi ke satuan stok 
+                    // Validasi item dasar
+                    if (!isset($item['satuan']) || !is_object($item['satuan'])) {
+                        throw new \Exception('4001: Objek satuan produk tidak ditemukan untuk item ' . ($index + 1));
+                    }
+                    if (!isset($item['produks_id']) || !is_numeric($item['produks_id'])) {
+                        throw new \Exception('4002: ID produk tidak valid untuk item ' . ($index + 1));
+                    }
+                    if (!isset($item['qty']) || !is_numeric($item['qty']) || $item['qty'] <= 0) {
+                        throw new \Exception('4003: Kuantitas produk tidak valid untuk item ' . ($index + 1));
+                    }
+
+                    $unitPriece = $item['satuan']; // object unit price
+
+                    // 1. Get produk
+                    $produk = $this->produkRepository->find($item['produks_id']);
+                    if (!$produk) {
+                        throw new \Exception('4004: Produk tidak ditemukan untuk ID: ' . $item['produks_id'] . ' (item ' . ($index + 1) . ')');
+                    }
+
+                    // 2. Get stok dan cek ketersediaan
                     $stok = $this->stokRepository->findStokByProdukId($item['produks_id']);
+                    if (!$stok) {
+                        throw new \Exception('4005: Stok barang kosong untuk produk: ' . $produk->name . ' (item ' . ($index + 1) . ')');
+                    }
+
+                    $qtyActual = $item['qty']; // Default to item qty
+
+                    // 3. Konversi ke satuan stok jika berbeda
                     if ($stok->satuan_id != $unitPriece->jenis_satuan_jual_id) {
+                        if (!property_exists($unitPriece, 'jenis_satuan_jual_id')) {
+                            throw new \Exception('4006: Properti jenis_satuan_jual_id tidak ditemukan pada objek satuan untuk produk: ' . $produk->name . ' (item ' . ($index + 1) . ')');
+                        }
+
                         $konversi =  $this->konversiSatuanService->convertToSatuanStok(
                             produksId: $item['produks_id'],
                             from: $unitPriece->jenis_satuan_jual_id,
                             qty: $item['qty']
                         );
+
+                        // Validasi hasil konversi
+                        if (!is_array($konversi) || !isset($konversi['konversi']) || !is_numeric($konversi['konversi'])) {
+                            throw new \Exception('4007: Gagal mengkonversi satuan untuk produk: ' . $produk->name . ' (item ' . ($index + 1) . ')');
+                        }
                         $qtyActual = $konversi['konversi'];
-                    } else {
-                        $qtyActual = $item['qty'];
                     }
+
+                    // 4. Validasi jumlah stok setelah pengurangan
                     $newAmount = $stok->jumlah - $qtyActual;
+                    if ($newAmount < 0) {
+                        throw new \Exception('4008: Stok tidak cukup untuk produk: ' . $produk->name . '. Tersedia: ' . $stok->jumlah . ', Diminta: ' . $qtyActual . ' (item ' . ($index + 1) . ')');
+                    }
+
+                    // 5. Validasi DTOs dan entitas aktor
+                    // if (!$this->actorDTOs || !$this->actorDTOs->getAgency() || !$this->actorDTOs->getGudang()) {
+                    //     throw new \Exception('4009: Data Agency atau Gudang pada aktor tidak lengkap (item ' . ($index + 1) . ')');
+                    // }
+                    // if (!method_exists($this->actorDTOs->getAgency(), 'getId') || !method_exists($this->actorDTOs->getGudang(), 'getId')) {
+                    //     throw new \Exception('4010: Metode getId() tidak ditemukan pada objek Agency atau Gudang (item ' . ($index + 1) . ')');
+                    // }
+
+
+                    // 6. Membuat DTO untuk update stok
                     $this->listStokServiceUpdate[] = $this->stokService->fromDTOs(new StokDTOs(
                         agency_id: $this->actorDTOs->getAgency()->getId(),
                         gudang_id: $this->actorDTOs->getGudang()->getId(),
@@ -127,13 +179,20 @@ class TrxContainerService
                         keterangan: "Barang Keluar"
                     ));
                 } catch (\Throwable $th) {
-                    log::error('trx container setStokUpdate()' . $th->getMessage());
-                    throw new \Exception('setStokUpdate:' . ' ' . $item['produks_id'] . ' ' . $th->getMessage());
+                    // Log error internal per item
+                    Log::error('TRX_DETAIL_ERROR: ' . $th->getMessage());
+                    // Re-throw exception untuk ditangkap oleh try/catch utama
+                    throw $th; // Melemparkan error asli untuk kode unik
                 }
             }
         } catch (\Throwable $th) {
-            Log::error('trx container validateStok()' . $th->getMessage());
-            throw new \Exception($th->getMessage());
+            // Log error global untuk seluruh proses transaksi
+            Log::error('TRX_GLOBAL_ERROR: ' . $th->getMessage());
+            if (preg_match('/^(\d{4}): (.+)/', $th->getMessage(), $matches)) {
+                throw new \Exception($th->getMessage()); // Gunakan pesan error dan kode yang sudah ada
+            } else {
+                throw new \Exception('5001: Terjadi kesalahan umum saat memperbarui stok. Detail: ' . $th->getMessage());
+            }
         }
     }
 
@@ -295,7 +354,7 @@ class TrxContainerService
     /**
      * validasi uang pelanggan >= total order
      */
-    public function validatePaymentCustomer(): bool
+    public function validatePaymentCustomer()
     {
         if ($this->tDTOs->getOrders()['payment_type_id'] == PayType::CASH) {
             return $this->tDTOs->getOrders()['total_customer_money'] >= $this->tDTOs->getSubTotal();

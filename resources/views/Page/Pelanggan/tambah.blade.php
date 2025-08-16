@@ -24,7 +24,7 @@
                         method="POST">
                         @csrf
                         <!-- Token CSRF -->
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
                             <label class="form-label" for="oncard_user_id">ONCARD USER ID</label>
                             <input class="form-control " id="oncard_user_id" name="oncard_user_id"
                                 placeholder="user id pada oncard" required type="number" />
@@ -33,13 +33,14 @@
                             <label class="form-label" for="oncard_account_number">NOMOR ACCOUNT ONCRD</label>
                             <input class="form-control " id="oncard_account_number" name="oncard_account_number"
                                 placeholder="nomor akun oncard, 'rekenig users'" required type="text" />
-                        </div>
+                        </div> --}}
                         <div class="col-md-6">
                             <label class="form-label" for="nama">NAMA PELANGGAN</label>
                             <input class="form-control " id="nama" name="nama" placeholder="Nama Pelanggan" required
                                 type="text" />
                         </div>
-                        <div class="col-md-6">
+                        <input class="form-select" id="user_type" name="user_type" type="hidden" value="general">
+                        {{-- <div class="col-md-6">
                             <label class="form-label" for="alamat_pelanggan">USER TYPE</label>
                             <select class="form-select" id="user_type" name="user_type" required>
                                 <option value="">Pilih User Type</option>
@@ -47,7 +48,7 @@
                                 <option value="general">general</option>
                                 <option value="merchant">merchant</option>
                             </select>
-                        </div>
+                        </div> --}}
                         <div class="col-md-6">
                             <label class="form-label" for="nomor_telepon_pelanggan">keterangan</label>
                             <textarea class="form-control" id="detail" name="detail" placeholder="Keterangan"></textarea>

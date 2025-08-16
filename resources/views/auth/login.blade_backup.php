@@ -24,7 +24,7 @@
     <style>
         .bg-login {
             background-image: url('https://oncard.id/assets_oncard/images/login-images/bg_new.webp') !important;
-            background-color:#fff1d4;
+            background-color: #fff1d4;
         }
     </style>
 </head>
@@ -38,7 +38,7 @@
                     <div class="col mx-auto">
                         <div class="mb-4 text-center">
                             <!-- <img src="{{ asset('admin') }}/assets/images/logo-img.png" width="180" alt="" /> -->
-                            <img src="https://oncard.id/assets/png/icon.png" width="180" alt="">
+                            <!-- <img src="https://oncard.id/assets/png/icon.png" width="180" alt=""> -->
                         </div>
                         <div class="card">
                             <div class="card-body">
@@ -65,7 +65,7 @@
                                                             class='bx bx-hide'></i></a>
                                                 </div>
                                             </div>
-                                            
+
                                             <div class="col-12">
                                                 <div class="d-grid">
                                                     <button type="submit" class="btn btn-success"><i
@@ -76,13 +76,13 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
                 <div class="text-secondary badge badge-sm badge-success text-center" style="width:100%;display:block;">
-								<p style="display:block; margin:auto;">This apps in version 2.0 now!</p>
-							</div>
+                    <p style="display:block; margin:auto;">This apps in version 2.0 now!</p>
+                </div>
                 <!--end row-->
             </div>
         </div>

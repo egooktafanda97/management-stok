@@ -36,7 +36,7 @@
 @section('content')
     <div class="page-wrapper" x-data="{
         collections: [],
-        token: `{{ !empty(auth()->user()) ? auth()->guard('api')->login(auth()->user()) : null }}`,
+        token: `{{ !empty(auth()->user())? auth()->guard('api')->login(auth()->user()): null }}`,
         collection: {},
         prodSerach: [],
         searchQuery: '',
@@ -122,7 +122,7 @@
         fetch('/api/trx/init-trx', {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer {{ !empty(auth()->user()) ? auth()->guard('api')->login(auth()->user()) : null }}`,
+                    'Authorization': `Bearer {{ !empty(auth()->user())? auth()->guard('api')->login(auth()->user()): null }}`,
                 }
             })
             .then(response => response.json())
@@ -184,8 +184,8 @@
                                             <div class="bg-gray-50 shadow-sm p-2 flex items-center hover:bg-gray-100 active:bg-gray-300"
                                                 style="cursor:pointer" x-on:click="addToProdOrder(prod)">
                                                 <div class="w-10">
-                                                    <img alt="Icon"
-                                                        src="https://oncard.id/assets/png/icon.png">
+                                                    {{-- <img alt="Icon"
+                                                        src="https://oncard.id/assets/png/icon.png"> --}}
                                                 </div>
 
                                                 <div class="flex-1 pl-2 mr-16">
@@ -314,7 +314,7 @@
                                         fetch(`/api/pelanggan/search?q=${this.searchQueryUser}`, {
                                                 headers: {
                                                     'Content-Type': 'application/json',
-                                                    'Authorization': `Bearer {{ !empty(auth()->user()) ? auth()->guard('api')->login(auth()->user()) : null }}`,
+                                                    'Authorization': `Bearer {{ !empty(auth()->user())? auth()->guard('api')->login(auth()->user()): null }}`,
                                                 }
                                             })
                                             .then(response => response.json())
@@ -451,7 +451,7 @@
                                                 const response =  await axios.post('/api/trx/shop',data,{
                                                 headers: {
                                                     'Content-Type': 'application/json',
-                                                    'Authorization': `Bearer {{ !empty(auth()->user()) ? auth()->guard('api')->login(auth()->user()) : null }}`,
+                                                    'Authorization': `Bearer {{ !empty(auth()->user())? auth()->guard('api')->login(auth()->user()): null }}`,
                                                 }
                                             }).catch(error => {
                                                 swal({

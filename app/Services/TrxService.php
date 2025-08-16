@@ -26,8 +26,7 @@ class TrxService
         private DebtUserService $debtService,
         public TransactionDetailService $transactionDetailService,
         public OncardPaymentService $oncardPaymentService
-    ) {
-    }
+    ) {}
 
     /**
      * @param TransactionDTOs $transactionDTOs
@@ -40,7 +39,7 @@ class TrxService
             $trxDtos = $this->tcs->setUp(
                 transactionDTOs: $transactionDTOs,
                 actorService: $this->actorService,
-                pelangganId: $transactionDTOs->getOrders()['pelanggan_id']
+                pelangganId: $transactionDTOs->getOrders()['pelanggan_id'] ?? null,
             );
             $this->trxdtos = $trxDtos->tDTOs;
             return $this;

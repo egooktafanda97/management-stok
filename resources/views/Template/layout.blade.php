@@ -10,7 +10,9 @@
         try {
             $token =
                 !empty(auth()->user()) && !empty(auth()->guard('api'))
-                    ? auth()->guard('api')->login(auth()->user())
+                    ? auth()
+                        ->guard('api')
+                        ->login(auth()->user())
                     : null;
         } catch (\Throwable $th) {
             //throw $th;
@@ -57,10 +59,11 @@
     <title>Gudang Mitra</title>
     <style>
         body {
-            font-size:12px!important;
+            font-size: 12px !important;
         }
+
         .card-header {
-            border:none!important;
+            border: none !important;
         }
     </style>
 </head>
@@ -68,33 +71,33 @@
 <body>
     <!--wrapper-->
     @role('gudang')
-    <div class="wrapper">
-    @endrole
-    @role('kasir')
-    <div class="wrapper">
-    @endrole
-        <!--sidebar wrapper -->
-        <div class="sidebar-wrapper" data-simplebar="true">
-            <div class="sidebar-header">
-                <div>
-                    <img alt="logo icon" class="logo-icon"
-                        src="https://oncard.id/assets/png/icon.png" style="width:70px;">
+        <div class="wrapper">
+        @endrole
+        @role('kasir')
+            <div class="wrapper">
+            @endrole
+            <!--sidebar wrapper -->
+            <div class="sidebar-wrapper" data-simplebar="true">
+                <div class="sidebar-header">
+                    <div>
+                        {{-- <img alt="logo icon" class="logo-icon"
+                        src="https://oncard.id/assets/png/icon.png" style="width:70px;"> --}}
+                    </div>
+                    <div>
+                        {{-- <h4 class="logo-text">WAREHOUSE</h4> --}}
+                    </div>
                 </div>
-                <div>
-                    {{--<h4 class="logo-text">WAREHOUSE</h4>--}}
-                </div>
-            </div>
-            <!--navigation-->
-            @include('Template.navbar')
+                <!--navigation-->
+                @include('Template.navbar')
 
-            <!--end navigation-->
-        </div>
-        <!--end sidebar wrapper -->
-        <!--start header -->
-        <header>
-            <div class="topbar d-flex align-items-center">
-                <nav class="navbar navbar-expand">
-                    {{-- <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
+                <!--end navigation-->
+            </div>
+            <!--end sidebar wrapper -->
+            <!--start header -->
+            <header>
+                <div class="topbar d-flex align-items-center">
+                    <nav class="navbar navbar-expand">
+                        {{-- <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
                     </div>
                     <div class="search-bar flex-grow-1">
                         <div class="position-relative search-bar-box">
@@ -106,87 +109,88 @@
                         </div>
                     </div> --}}
 
-                </nav>
-                <strong class="mr-10" style="margin-right:20px; border-radius:5px; width:150px; background:#ccc; padding:5px; display:flex; gap:10px;">
-                <i class='bx bx-user'></i>
-                {{ auth()->user()->nama }}</strong>
-            </div>
-        </header>
-        <!--end header -->
-        <!--start page wrapper -->
-        @yield('content')
+                    </nav>
+                    <strong class="mr-10"
+                        style="margin-right:20px; border-radius:5px; width:150px; background:#ccc; padding:5px; display:flex; gap:10px;">
+                        <i class='bx bx-user'></i>
+                        {{ auth()->user()->nama }}</strong>
+                </div>
+            </header>
+            <!--end header -->
+            <!--start page wrapper -->
+            @yield('content')
 
-        <!--end page wrapper -->
-        <!--start overlay-->
-        <div class="overlay toggle-icon"></div>
-        <!--end overlay-->
-        <!--Start Back To Top Button-->
-        <a class="back-to-top" href="javaScript:;"><i class='bx bxs-up-arrow-alt'></i></a>
-        <!--End Back To Top Button-->
-        <footer class="page-footer">
-            <?php
-            // Dapatkan tahun sekarang menggunakan PHP
-            $year = date('Y');
-            ?>
+            <!--end page wrapper -->
+            <!--start overlay-->
+            <div class="overlay toggle-icon"></div>
+            <!--end overlay-->
+            <!--Start Back To Top Button-->
+            <a class="back-to-top" href="javaScript:;"><i class='bx bxs-up-arrow-alt'></i></a>
+            <!--End Back To Top Button-->
+            <footer class="page-footer">
+                <?php
+                // Dapatkan tahun sekarang menggunakan PHP
+                $year = date('Y');
+                ?>
 
-            <p class="mb-0">Copyright © <?php echo $year; ?>. All right reserved.</p>
-        </footer>
-    </div>
-    <!--end wrapper-->
-    <!--start switcher-->
+                <p class="mb-0">Copyright © <?php echo $year; ?>. All right reserved.</p>
+            </footer>
+        </div>
+        <!--end wrapper-->
+        <!--start switcher-->
 
-    <!--end switcher-->
-    @include('sweetalert::alert')
+        <!--end switcher-->
+        @include('sweetalert::alert')
 
-    @yield('script')
+        @yield('script')
 
-    <!-- Bootstrap JS -->
-    <script src="{{ asset('admin') }}/assets/js/bootstrap.bundle.min.js"></script>
-    <!--plugins-->
-    <script src="{{ asset('admin') }}/assets/js/jquery.min.js"></script>
-    <script src="{{ asset('admin') }}/assets/plugins/simplebar/js/simplebar.min.js"></script>
-    <script src="{{ asset('admin') }}/assets/plugins/metismenu/js/metisMenu.min.js"></script>
-    <script src="{{ asset('admin') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
-    <script src="{{ asset('admin') }}/assets/plugins/vectormap/jquery-jvectormap-2.0.2.min.js"></script>
-    <script src="{{ asset('admin') }}/assets/plugins/vectormap/jquery-jvectormap-world-mill-en.js"></script>
-    <script src="{{ asset('admin') }}/assets/plugins/chartjs/js/Chart.min.js"></script>
-    <script src="{{ asset('admin') }}/assets/plugins/chartjs/js/Chart.extension.js"></script>
-    <script src="{{ asset('admin') }}/assets/js/index.js"></script>
-    <!--app JS-->
-    <script src="{{ asset('admin') }}/assets/js/app.js"></script>
+        <!-- Bootstrap JS -->
+        <script src="{{ asset('admin') }}/assets/js/bootstrap.bundle.min.js"></script>
+        <!--plugins-->
+        <script src="{{ asset('admin') }}/assets/js/jquery.min.js"></script>
+        <script src="{{ asset('admin') }}/assets/plugins/simplebar/js/simplebar.min.js"></script>
+        <script src="{{ asset('admin') }}/assets/plugins/metismenu/js/metisMenu.min.js"></script>
+        <script src="{{ asset('admin') }}/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js"></script>
+        <script src="{{ asset('admin') }}/assets/plugins/vectormap/jquery-jvectormap-2.0.2.min.js"></script>
+        <script src="{{ asset('admin') }}/assets/plugins/vectormap/jquery-jvectormap-world-mill-en.js"></script>
+        <script src="{{ asset('admin') }}/assets/plugins/chartjs/js/Chart.min.js"></script>
+        <script src="{{ asset('admin') }}/assets/plugins/chartjs/js/Chart.extension.js"></script>
+        <script src="{{ asset('admin') }}/assets/js/index.js"></script>
+        <!--app JS-->
+        <script src="{{ asset('admin') }}/assets/js/app.js"></script>
 
-    {{-- UPLOAD --}}
-    <script src="{{ asset('admin') }}/assets/plugins/Drag-And-Drop/dist/imageuploadify.min.js"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#image-uploadify').imageuploadify();
-        })
+        {{-- UPLOAD --}}
+        <script src="{{ asset('admin') }}/assets/plugins/Drag-And-Drop/dist/imageuploadify.min.js"></script>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#image-uploadify').imageuploadify();
+            })
 
-        $(".destory-items").click(function() {
-            var id = $(this).data('id');
-            var url = $(this).data('url');
-            swal({
-                    title: "Are you sure?",
-                    text: "Once deleted, you will not be able to recover this imaginary file!",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        window.location.href = url
-                    }
-                });
-        });
-        const rupiah = (number) => {
-            return new Intl.NumberFormat("id-ID", {
-                style: "currency",
-                currency: "IDR"
-            }).format(number);
-        }
-    </script>
-    @stack('script')
+            $(".destory-items").click(function() {
+                var id = $(this).data('id');
+                var url = $(this).data('url');
+                swal({
+                        title: "Are you sure?",
+                        text: "Once deleted, you will not be able to recover this imaginary file!",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            window.location.href = url
+                        }
+                    });
+            });
+            const rupiah = (number) => {
+                return new Intl.NumberFormat("id-ID", {
+                    style: "currency",
+                    currency: "IDR"
+                }).format(number);
+            }
+        </script>
+        @stack('script')
 
 
 </body>

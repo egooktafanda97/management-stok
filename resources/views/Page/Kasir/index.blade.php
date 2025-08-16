@@ -4,7 +4,7 @@
         <div class="page-content">
             <!--breadcrumb-->
             <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="ps-3">
+                <div class="ps-3">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0 p-0">
                             <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
@@ -13,7 +13,16 @@
                         </ol>
                     </nav>
                 </div>
+
+                <div class="ms-auto">
+                    <div class="btn-group">
+                        <a class="btn btn-success" href="{{ url('kasir/tambah') }}">
+                            <i class='bx bx-plus-circle'></i>
+                            TAMBAH DATA</a>
+                    </div>
+                </div>
             </div>
+
             <!--end breadcrumb-->
             <hr />
             <div class="card">
@@ -25,7 +34,7 @@
                                     <th>Nama</th>
                                     <th>Alamat</th>
                                     <th>Telepon</th>
-                                    {{--<th>Logo</th>--}}
+                                    {{-- <th>Logo</th> --}}
                                     <th>Deskripsi</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -36,17 +45,18 @@
                                         <td>{{ $kasir->nama }}</td>
                                         <td>{{ $kasir->alamat }}</td>
                                         <td>{{ $kasir->telepon }}</td>
-                                        {{--<td>
+                                        {{-- <td>
                                             @if ($kasir->logo)
                                                 <img src="{{ asset($kasir->logo) }}" alt="Logo" width="50">
                                             @else
                                                 Tidak ada logo
                                             @endif
-                                        </td>--}}
+                                        </td> --}}
                                         <td>{{ $kasir->deskripsi }}</td>
                                         <td>
-                                            <a href="{{ url('kasir/edit', ['id' => $kasir->id]) }}"
-                                                class="btn btn-primary btn-sm"><i class='bx bx-pencil'></i> Edit</a>
+                                            <a class="btn btn-primary btn-sm"
+                                                href="{{ url('kasir/edit', ['id' => $kasir->id]) }}"><i
+                                                    class='bx bx-pencil'></i> Edit</a>
                                             <button class="btn btn-danger btn-sm btn-delete"
                                                 data-id="{{ $kasir->id }}"><i class='bx bx-trash'></i> Hapus</button>
                                             <form action="{{ url('kasir/destroy', ['id' => $kasir->id]) }}"
@@ -63,7 +73,7 @@
                                     <th>Nama</th>
                                     <th>Alamat</th>
                                     <th>Telepon</th>
-                                    {{--<th>Logo</th>--}}
+                                    {{-- <th>Logo</th> --}}
                                     <th>Deskripsi</th>
                                     <th>Aksi</th>
                                 </tr>

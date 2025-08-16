@@ -22,8 +22,7 @@ class KasirController extends Controller
     public function __construct(
         public ActorService $actorService,
         public KasirService $kasirService
-    ) {
-    }
+    ) {}
 
     //crud
     #[Get("")]

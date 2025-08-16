@@ -7,8 +7,10 @@ use App\Constant\PayType;
 use App\Dtos\TransactionDTOs;
 use App\Models\ConfigGudang;
 use App\Models\ConfigToko;
+use App\Models\GeneralActor;
 use App\Models\PaymentType;
 use App\Repositories\TrxRepository;
+use App\Services\ActorService;
 use App\Services\HttpResponse;
 use App\Services\TrxService;
 use App\Services\UnitPriecesService;
@@ -28,9 +30,9 @@ class TrxController extends Controller
     public function __construct(
         public TrxService $trxService,
         public TrxRepository $trxRepository,
-        public UnitPriecesService $unitPriecesService
-    ) {
-    }
+        public UnitPriecesService $unitPriecesService,
+        public ActorService $actorService,
+    ) {}
 
     #[Get('')]
     public function show()
@@ -64,11 +66,25 @@ class TrxController extends Controller
     public function trxProcessing(Request $request)
     {
         try {
+            if (empty($request->user)) {
+                $usId = GeneralActor::where([
+                    "agency_id" => $this->actorService->agency()->id,
+                    "nama" => "umum"
+                ])->first()->id ?? null;
+                $request->merge([
+                    "user" => $usId
+                ]);
+            }
+        } catch (\Throwable $th) {
+            return HttpResponse::error('Tidak dapat mengambil user umum.')->code(HttpStatus::HTTP_BAD_REQUEST);
+        }
+        try {
             $this->trxRepository->setCostumRules([
                 'orders' => 'required|array',
-                'user' => 'required|exists:users,id',
+                'user' => 'nullable|exists:users,id',
                 'payment_type_id' => 'required|exists:payment_types,id',
             ]);
+
             $this->trxRepository->validate([
                 'orders' => $request->orders,
                 'user' => $request['user']['id'] ?? $request->user ?? null,
@@ -76,6 +92,7 @@ class TrxController extends Controller
             ]);
 
             $trxDTos = new TransactionDTOs();
+
             collect($request->orders)->each(function ($item) use ($trxDTos) {
                 $trxDTos->OrderItems(
                     produks_id: $item['id'],
@@ -100,7 +117,7 @@ class TrxController extends Controller
             return HttpResponse::success($transaction)->code(HttpStatus::HTTP_OK);
         } catch (\Throwable $th) {
             return HttpResponse::error($th->getMessage())->code(HttpStatus::HTTP_BAD_REQUEST);
-            //throw $th;
+            throw $th;
         }
     }
 

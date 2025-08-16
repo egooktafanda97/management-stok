@@ -28,7 +28,7 @@
                         <table class="table table-striped table-bordered" id="example" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>NO REKENIG ONCARD</th>
+                                    {{-- <th>NO REKENIG ONCARD</th> --}}
                                     <th>NAMA</th>
                                     <th>TIPE USER</th>
                                     <th>KETERANGAN</th>
@@ -38,7 +38,7 @@
                             <tbody>
                                 @foreach ($pelanggans as $pelanggan)
                                     <tr>
-                                        <td>{{ $pelanggan->oncard_account_number ?? '' }}</td>
+                                        {{-- <td>{{ $pelanggan->oncard_account_number ?? '' }}</td> --}}
                                         <td>{{ $pelanggan->nama ?? '' }}</td>
                                         <td>{{ $pelanggan->user_type ?? '' }}</td>
                                         <td>{{ $pelanggan->detail ?? '' }}</td>

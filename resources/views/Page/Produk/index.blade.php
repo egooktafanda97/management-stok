@@ -36,7 +36,7 @@
                                     <th>JENIS</th>
                                     <th>STOK</th>
                                     <th>DESKRIPSI</th>
-                                    {{--<th>GAMBAR</th>--}}
+                                    {{-- <th>GAMBAR</th> --}}
                                     <th>AKSI</th>
                                 </tr>
                             </thead>
@@ -44,7 +44,8 @@
                                 @foreach ($produk as $key => $produks)
                                     {{-- @dd(); --}}
                                     <tr>
-                                        <td width="10"> {{ ($produk->currentPage() - 1) * $produk->perPage() + $loop->iteration }}
+                                        <td width="10">
+                                            {{ ($produk->currentPage() - 1) * $produk->perPage() + $loop->iteration }}
                                         </td>
                                         <td>{{ $produks->name }}</td>
                                         <td>{{ $produks->jenisProduk->name }}</td>
@@ -52,7 +53,7 @@
                                             {{ $produks->satuanStok->jenisSatuan->name ?? '' }}
                                         </td>
                                         <td>{{ $produks->deskripsi }}</td>
-                                        {{--<td>
+                                        {{-- <td>
                                             <button class="btn btn-sm btn-outline-primary  px-5"
                                                 data-bs-target="#exampleModal{{ $key }}" data-bs-toggle="modal"
                                                 type="button">
@@ -80,16 +81,16 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </td>--}}
+                                        </td> --}}
                                         <td>
                                             <a class="btn btn-sm btn-info text-white"
                                                 href="{{ url('produk/addons/' . $produks->id) }}"
                                                 title="Lengkapi data produk">
                                                 <i class="fadeIn animated bx bx-layer-plus"></i>
                                             </a>
-                                            {{--<a class="btn btn-sm btn-primary"
+                                            <a class="btn btn-sm btn-primary"
                                                 href="{{ url('produk/edit', ['id' => $produks->id]) }}"><i
-                                                    class='bx bx-pencil'></i></a>--}}
+                                                    class='bx bx-pencil'></i></a>
                                             <button class="btn btn-sm btn-danger btn-delete"
                                                 data-id="{{ $produks->id }}"><i class='bx bx-trash'></i></button>
                                             <form action="{{ url('produk/hapus', ['id' => $produks->id]) }}"
@@ -107,7 +108,7 @@
                                     <th>JENIS</th>
                                     <th>STOK</th>
                                     <th>DESKRIPSI</th>
-                                    {{--<th>GAMBAR</th>--}}
+                                    {{-- <th>GAMBAR</th> --}}
                                     <th>AKSI</th>
                                 </tr>
                             </tfoot>
