@@ -30,16 +30,16 @@ class TransactionSeeder extends Seeder
                 produkId: 1
             )
         );
-        $transaction = $service->fromDTOs(
-            $trxDTos->order(
-                pelanggan_id: 1,
-                total_uang_pelanggan: 100000,
-                payment_type_id: PayType::DEBS,
-                diskon: 10,
-                pph: true,
-            )
-        )
-            ->middle()
-            ->trxProccessing();
+        // $transaction = $service->fromDTOs(
+        //     $trxDTos->order(
+        //         pelanggan_id: 1,
+        //         total_uang_pelanggan: 100000,
+        //         payment_type_id: PayType::DEBS,
+        //         diskon: 10,
+        //         pph: true,
+        //     )
+        // )
+        //     ->middle()
+        //     ->trxProccessing();
     }
 }

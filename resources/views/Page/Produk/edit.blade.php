@@ -16,19 +16,19 @@
                         @csrf
                         <!-- Token CSRF -->
                         <div class="col-md-6">
-                            <label class="form-label" for="nama_produk">NAMA BUAH</label>
-                            <input class="form-control border-start-0" id="nama_produk" name="nama_produk"
-                                placeholder="Nama Buah" required type="text" value="{{ $produk->nama_produk }}" />
+                            <label class="form-label" for="name">NAMA BARANG</label>
+                            <input class="form-control border-start-0" id="name" name="name" placeholder="Nama Buah"
+                                required type="text" value="{{ $produk->name }}" />
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label" for="jenis_produk_id">JENIS PRODUK</label>
+                            <label class="form-label" for="jenis_produk_id">JENIS BARANG</label>
                             <select class="form-control" name="jenis_produk_id">
                                 <option value="">-- Pilih Jenis Produk --</option>
                                 @foreach ($jenisProduk as $jenis)
                                     <option {{ $produk->jenis_produk_id == $jenis->id ? 'selected' : '' }}
                                         value="{{ $jenis->id }}">
-                                        {{ $jenis->nama_jenis_produk }}
+                                        {{ $jenis->name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -41,7 +41,7 @@
                                 @foreach ($suppliers as $supplier)
                                     <option {{ $produk->supplier_id == $supplier->id ? 'selected' : '' }}
                                         value="{{ $supplier->id }}">
-                                        {{ $supplier->nama_supplier }}
+                                        {{ $supplier->name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -73,7 +73,7 @@
                                     {{-- <option value="{{ $jenis->id }}">{{ $jenis->nama }}</option> --}}
                                     <option {{ $jenis->id == $produk->satuan_jual_terkecil_id ? 'selected' : '' }}
                                         value="{{ $jenis->id }}">
-                                        {{ $jenis->nama }}</option>
+                                        {{ $jenis->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -86,7 +86,8 @@
                             <label class="form-label" for="gambar">GAMBAR BUAH</label>
                             <input class="form-control" id="gambar" name="gambar" type="file">
                             <p class="mt-2">Gambar saat ini:</p>
-                            <img alt="Gambar Produk" src="{{ asset($produk->gambar) }}" style="max-width: 200px;">
+                            <img alt="Gambar Produk" src="{{ asset('imgproduk/' . $produk->gambar) }}"
+                                style="max-width: 200px;">
                         </div>
 
 

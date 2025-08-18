@@ -22,6 +22,7 @@ use App\Services\StatusService;
 use App\Services\SupplierService;
 use App\Services\UnitPriecesService;
 use App\Utils\Helpers;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -45,8 +46,7 @@ class ProdukController extends Controller
         public ProdukDTOs $produkDTOs,
         public UnitPriecesService $unitService,
         public KonversiSatuanService $konversiSatuanService,
-    ) {
-    }
+    ) {}
 
     #[Get("")]
     public function index()
@@ -60,6 +60,19 @@ class ProdukController extends Controller
     public function formtambah()
     {
         return view('Page.Produk.tambah', [
+            "jenisProduk" => $this->jenisProdukService->getByUsers(),
+            "suppliers" => $this->supplierService->getByUsers(),
+            "rak" => $this->rakService->getRak(),
+            "satuan_jual" => $this->jenisSatuanService->getByAgency(),
+        ]);
+    }
+
+
+    #[Get("edit/{id}")]
+    public function formEdit($id)
+    {
+        return view('Page.Produk.edit', [
+            "produk" => Produk::find($id),
             "jenisProduk" => $this->jenisProdukService->getByUsers(),
             "suppliers" => $this->supplierService->getByUsers(),
             "rak" => $this->rakService->getRak(),
@@ -195,50 +208,57 @@ class ProdukController extends Controller
 
 
     #[Post("editdata/{id}")]
-    public function edit(Request $request, $id)
+    public function editdata(Request $request, $id)
     {
-        $request->validate([
-            'nama_produk' => 'required|string|max:255',
-            'supplier_id' => 'nullable|numeric|min:0',
-            'jenis_produk_id' => 'required|numeric|min:0',
+        // 1. Definisikan aturan validasi langsung di dalam controller.
+        //    Ini memastikan semua logika validasi terpusat di sini.
+        $rules = [
+            'name' => 'nullable|string|max:255',
             'deskripsi' => 'nullable|string',
-        ]);
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'jenis_produk_id' => 'nullable|exists:jenis_produks,id',
+            'barcode' => 'nullable|string|max:100',
+            'rak_id' => 'nullable|exists:rak,id',
+            'supplier_id' => 'nullable|exists:suppliers,id',
+            'satuan_jual_terkecil_id' => 'nullable|exists:satuan_juals,id',
+        ];
 
-        $produk = Produk::find($id);
+        // Jalankan validasi.
+        $validatedData = $request->validate($rules);
 
-        if (!$produk) {
-            return Redirect::back()->withErrors(['Produk tidak ditemukan.']);
-        }
+        try {
+            // 2. Cari data produk yang akan diperbarui. Jika tidak ditemukan, akan otomatis menghasilkan 404.
+            $produk = Produk::findOrFail($id);
 
-        // Hapus gambar lama jika ada
-        if ($request->hasFile('gambar') && $produk->gambar) {
-            $oldImagePath = public_path($produk->gambar);
-            if (file_exists($oldImagePath)) {
-                unlink($oldImagePath);
+            // 3. Tangani unggahan gambar.
+            if ($request->hasFile('gambar')) {
+                // Hapus gambar lama jika ada, untuk menghindari file tidak terpakai.
+                try {
+                    $uploaded = Helpers::Images($request, 'gambar', 'imgproduk');
+                    if ($uploaded->status) {
+                        $validatedData['gambar'] = $uploaded->name;
+                    }
+                } catch (\Throwable $th) {
+                }
             }
+
+            // 4. Perbarui data produk dengan data yang sudah divalidasi dan aman.
+            //    Menggunakan metode fill() untuk mengisi properti yang ada di `$fillable` array model.
+            $produk->fill($validatedData);
+
+            // Tambahkan user_id dari user yang sedang login secara langsung di controller.
+            // Ini memastikan bahwa `user_id` tidak dapat dimanipulasi dari formulir.
+            $produk->user_id = Auth::id();
+
+            // Simpan perubahan ke database.
+            $produk->save();
+
+            // 5. Redirect pengguna kembali ke halaman daftar produk dengan pesan sukses.
+            return redirect('produk')->with('success', 'Data produk berhasil diperbarui!');
+        } catch (\Exception $e) {
+            // Tangani kesalahan (misalnya, masalah database)
+            return back()->with('error', 'Terjadi kesalahan saat memperbarui data: ' . $e->getMessage());
         }
-
-        $produk->nama_produk = $request->nama_produk;
-        if (!empty($request->supplier_id))
-            $produk->supplier_id = $request->supplier_id;
-        $produk->jenis_produk_id = $request->jenis_produk_id;
-        $produk->rak_id = $request->rak_id;
-        $produk->satuan_jual_terkecil_id = $request->satuan_jual_terkecil_id;
-        if (!empty($request->barcode))
-            $produk->barcode = $request->barcode ?? '';
-        $produk->deskripsi = $request->deskripsi;
-
-        if ($request->hasFile('gambar')) {
-            $gambarFile = $request->file('gambar');
-            $gambarName = time() . '_' . $gambarFile->getClientOriginalName();
-            $gambarPath = $gambarFile->move(public_path('imgproduk'), $gambarName);
-            $produk->gambar = '/imgproduk/' . $gambarName;
-        }
-
-        $produk->save();
-
-        Alert::success('Success', 'Produk berhasil diperbarui!');
-        return redirect()->route('produk.index');
     }
 
     #[Get("hapus/{id}")]
