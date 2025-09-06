@@ -39,7 +39,7 @@ class TrxService
             $trxDtos = $this->tcs->setUp(
                 transactionDTOs: $transactionDTOs,
                 actorService: $this->actorService,
-                pelangganId: $transactionDTOs->getOrders()['pelanggan_id'] ?? null,
+                pelangganId: 1 //$transactionDTOs->getOrders()['pelanggan_id'] ?? null,
             );
             $this->trxdtos = $trxDtos->tDTOs;
             return $this;

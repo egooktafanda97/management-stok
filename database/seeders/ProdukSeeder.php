@@ -29,14 +29,13 @@ class ProdukSeeder extends Seeder
         public UnitPriecesService $unitPriecesService,
         public KonversiSatuanService $konversiSatuanService,
         public BarangMasukService $barangMasukService,
-    ) {
-    }
+    ) {}
     /**
      * Run the database seeds.
      */
     public function addProduk1()
     {
-        auth()->login(User::whereUsername('gudang_demo')->first());
+        auth()->login(User::whereUsername('toko_demo')->first());
         $prod1 = $this->produkService
             ->fromDTOs(ProdukDTOs::fromArray([
                 'name' => 'Produk 1',
@@ -106,86 +105,86 @@ class ProdukSeeder extends Seeder
         // produk 1
     }
 
-    public function addProduk2()
-    {
-        auth()->login(User::whereUsername('gudang_demo')->first());
-        $prod2 = $this->produkService
-            ->fromDTOs(ProdukDTOs::fromArray([
-                'name' => 'Produk 2',
-                'deskripsi' => 'Deskripsi Produk 2',
-                'gambar' => 'gambar2.jpg',
-                'jenis_produk_id' => $this->jenisProdukService->findByName('Minuman')->id,
-                'barcode' => '124123214',
-                'satuan_stok' => [
-                    'satuan_stok_id' => Satuan::PCS
-                ],
-            ]))
-            ->addOns(["harga_jual_produk" => 20000])
-            ->create();
+    // public function addProduk2()
+    // {
+    //     auth()->login(User::whereUsername('gudang_demo')->first());
+    //     $prod2 = $this->produkService
+    //         ->fromDTOs(ProdukDTOs::fromArray([
+    //             'name' => 'Produk 2',
+    //             'deskripsi' => 'Deskripsi Produk 2',
+    //             'gambar' => 'gambar2.jpg',
+    //             'jenis_produk_id' => $this->jenisProdukService->findByName('Minuman')->id,
+    //             'barcode' => '124123214',
+    //             'satuan_stok' => [
+    //                 'satuan_stok_id' => Satuan::PCS
+    //             ],
+    //         ]))
+    //         ->addOns(["harga_jual_produk" => 20000])
+    //         ->create();
 
-        // tambahkan unit harga
-        $this->unitPriecesService->fromCreatd(UnitPriecesDTOs::fromArray([
-            "produks_id" => $prod2->id,
-            "name" => "pcs", // nama untit harga mmisal 1 renteng dll.
-            "priece" => 5000,
-            "jenis_satuan_jual_id" => Satuan::PCS,
-            "diskon" => 0, // diskon 3%
-        ]))
-            ->store();
+    //     // tambahkan unit harga
+    //     $this->unitPriecesService->fromCreatd(UnitPriecesDTOs::fromArray([
+    //         "produks_id" => $prod2->id,
+    //         "name" => "pcs", // nama untit harga mmisal 1 renteng dll.
+    //         "priece" => 5000,
+    //         "jenis_satuan_jual_id" => Satuan::PCS,
+    //         "diskon" => 0, // diskon 3%
+    //     ]))
+    //         ->store();
 
-        $this->unitPriecesService->fromCreatd(UnitPriecesDTOs::fromArray([
-            "produks_id" => $prod2->id,
-            "name" => "pack", // nama untit harga mmisal 1 renteng dll.
-            "priece" => 20000,
-            "jenis_satuan_jual_id" => Satuan::TOPLES,
-            "diskon" => 0, // diskon 3%
-        ]))
-            ->store();
+    //     $this->unitPriecesService->fromCreatd(UnitPriecesDTOs::fromArray([
+    //         "produks_id" => $prod2->id,
+    //         "name" => "pack", // nama untit harga mmisal 1 renteng dll.
+    //         "priece" => 20000,
+    //         "jenis_satuan_jual_id" => Satuan::TOPLES,
+    //         "diskon" => 0, // diskon 3%
+    //     ]))
+    //         ->store();
 
-        // tambahkan  item konversi satuan ######################################
-        # satuan stok pcs to pcs
-        $this->konversiSatuanService->fromDTOs(KonversiSatuanDTOs::fromArray([
-            'produks_id' => $prod2->id,
-            'satuan_id' => Satuan::PCS,
-            'satuan_konversi_id' => $prod2->satuanStok->getSatuanStokId(),
-            'nilai_konversi' => (float) 1,
-        ]))->create();
-        # satuan stok pcs to toples
-        $this->konversiSatuanService->fromDTOs(KonversiSatuanDTOs::fromArray([
-            'produks_id' => $prod2->id,
-            'satuan_id' => Satuan::TOPLES,
-            'satuan_konversi_id' => $prod2->satuanStok->getSatuanStokId(),
-            'nilai_konversi' => (float) 10,
-        ]))->create();
+    //     // tambahkan  item konversi satuan ######################################
+    //     # satuan stok pcs to pcs
+    //     $this->konversiSatuanService->fromDTOs(KonversiSatuanDTOs::fromArray([
+    //         'produks_id' => $prod2->id,
+    //         'satuan_id' => Satuan::PCS,
+    //         'satuan_konversi_id' => $prod2->satuanStok->getSatuanStokId(),
+    //         'nilai_konversi' => (float) 1,
+    //     ]))->create();
+    //     # satuan stok pcs to toples
+    //     $this->konversiSatuanService->fromDTOs(KonversiSatuanDTOs::fromArray([
+    //         'produks_id' => $prod2->id,
+    //         'satuan_id' => Satuan::TOPLES,
+    //         'satuan_konversi_id' => $prod2->satuanStok->getSatuanStokId(),
+    //         'nilai_konversi' => (float) 10,
+    //     ]))->create();
 
-        # satuan stok pcs to dus
-        $this->konversiSatuanService->fromDTOs(KonversiSatuanDTOs::fromArray([
-            'produks_id' => $prod2->id,
-            'satuan_id' => Satuan::DUS,
-            'satuan_konversi_id' => $prod2->satuanStok->getSatuanStokId(),
-            'nilai_konversi' => (float) 20,
-        ]))->create();
-        ######################################
-        ############################# barang masuk #####################################
-        // tambahkan barang masuk
-        $bMasukService = app()->make(BarangMasukService::class);
-        $bMasukService->fromDTOs((new BarangMasukDTOs(
-            produks_id: $prod2->id,
-            supplier_id: null,
-            harga_beli: 100000,
-            jumlah_barang_masuk: 2,
-            satuan_beli_id: Satuan::DUS,
-        ))
-            ->setId(null))
-            ->create();
-    }
+    //     # satuan stok pcs to dus
+    //     $this->konversiSatuanService->fromDTOs(KonversiSatuanDTOs::fromArray([
+    //         'produks_id' => $prod2->id,
+    //         'satuan_id' => Satuan::DUS,
+    //         'satuan_konversi_id' => $prod2->satuanStok->getSatuanStokId(),
+    //         'nilai_konversi' => (float) 20,
+    //     ]))->create();
+    //     ######################################
+    //     ############################# barang masuk #####################################
+    //     // tambahkan barang masuk
+    //     $bMasukService = app()->make(BarangMasukService::class);
+    //     $bMasukService->fromDTOs((new BarangMasukDTOs(
+    //         produks_id: $prod2->id,
+    //         supplier_id: null,
+    //         harga_beli: 100000,
+    //         jumlah_barang_masuk: 2,
+    //         satuan_beli_id: Satuan::DUS,
+    //     ))
+    //         ->setId(null))
+    //         ->create();
+    // }
 
 
     public function run(): void
     {
 
         $this->addProduk1();
-        $this->addProduk2();
+        // $this->addProduk2();
     }
 }
 

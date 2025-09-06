@@ -18,15 +18,14 @@ class DataMasterSeeder extends Seeder
     public function __construct(
         public JenisSatuanService $jenisSatuanService,
         public JenisProdukService $jenisProdukService,
-    ) {
-    }
+    ) {}
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        auth()->login(User::whereUsername('gudang_demo')->first());
-        $payTypes = ['CASH', 'DEBS', 'ONCARD'];
+        auth()->login(User::whereUsername('toko_demo')->first());
+        $payTypes = ['CASH'];
         foreach ($payTypes as $payType) {
             PaymentType::create([
                 'agency_id' => 1,

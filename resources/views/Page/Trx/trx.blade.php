@@ -725,13 +725,13 @@
 
                                         <div
                                             style="position:relative; padding:10px; background:#ffde68; border-radius:0px; display:block">
-                                            <div class="form-group">
+                                            {{-- <div class="form-group">
                                                 <div class="col-md-12 mb-3">
                                                     <label for="">Pelanggan</label>
                                                     <select class="user-search form-control"
                                                         style=" padding:15px!important"></select>
                                                 </div>
-                                            </div>
+                                            </div> --}}
 
                                             <div x-show="payTypeActived == 3">
                                                 <div class="flex justify-between mb-2 py-1">

@@ -105,7 +105,7 @@ class TrxController extends Controller
             });
             $transaction = $this->trxService->fromDTOs(
                 $trxDTos->order(
-                    pelanggan_id: $request['user']['id'] ?? $request->user ?? null,
+                    pelanggan_id: 1,
                     total_uang_pelanggan: $request->total_pembayaran ?? 0,
                     payment_type_id: $request->payType ?? PayType::CASH,
                     diskon: $request->diskon ?? 0,

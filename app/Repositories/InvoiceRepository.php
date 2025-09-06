@@ -10,7 +10,7 @@ use Carbon\Carbon;
 class InvoiceRepository extends BaseRepository
 {
     private $invoicePlan;
-    private $prefix = 'PHNX-';
+    private $prefix = 'UN-';
 
     public function lastInvoice()
     {

@@ -48,13 +48,13 @@
                 <div class="menu-title">SUPPLIER</div>
             </a>
         </li>
-        <li>
+        {{-- <li>
             <a href="/pelanggan">
                 <div class="parent-icon"><i class='bx bxs-user-pin'></i>
                 </div>
                 <div class="menu-title">PELANGGAN</div>
             </a>
-        </li>
+        </li> --}}
         <li>
             <a href="/kasir">
                 <div class="parent-icon"><i class='bx bxs-user'></i>
@@ -62,14 +62,16 @@
                 <div class="menu-title">USER KASIR</div>
             </a>
         </li>
-        <li>
+
+
+        {{-- <li>
             <a href="/payment/pay-debs">
                 <div class="parent-icon">
                     <i class='bx bxs-dollar-circle'></i>
                 </div>
                 <div class="menu-title">HUTANG PELANGGAN</div>
             </a>
-        </li>
+        </li> --}}
         {{-- <li>
             <a href="/debs">
                 <div class="parent-icon">
@@ -85,6 +87,23 @@
                 <div class="menu-title">HISTORY</div>
             </a>
         </li>
+        <li>
+            <ul>
+                <li>
+                    <a class="has-arrow" href="javascript:;">
+                        <div class="parent-icon"><i class='bx bxs-report'></i>
+                        </div>
+                        <div class="menu-title">LAPORAN</div>
+                    </a>
+                    <ul>
+                        <li> <a href="/laporan/barangmasuk"><i class="bx bx-right-arrow-alt"></i>Laporan Produk</a>
+                        </li>
+                        <li> <a href="/laporan/produk"><i class="bx bx-right-arrow-alt"></i>Laporan Barang Masuk</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
     @endrole
     {{-- ---- TRX --}}
     @role('kasir')
@@ -96,13 +115,13 @@
                 <div class="menu-title">KASIR</div>
             </a>
         </li>
-        <li>
+        {{-- <li>
             <a href="/payment/pay-debs">
                 <div class="parent-icon"><i class='bx bx-file-blank'></i>
                 </div>
                 <div class="menu-title">HUTANG</div>
             </a>
-        </li>
+        </li> --}}
         <li>
             <a href="{{ url('trx/history') }}">
                 <div class="parent-icon"><i class='bx bx-history'></i>

@@ -28,8 +28,7 @@ class ProdukService
         public ProdukConfigRepository $produkConfigRepository,
         public KonversiSatuanService $konversiSatuanService,
         public UnitPriecesService $unitPriecesService
-    ) {
-    }
+    ) {}
 
     public function fromDTOs(ProdukDTOs $produkDTOs)
     {
@@ -202,6 +201,14 @@ class ProdukService
         } catch (\Throwable $th) {
             throw new \Exception('prod : ' . $th->getMessage());
         }
+    }
+
+    public function getAll()
+    {
+        return Produk::with(Produk::allWith())
+            ->where('agency_id', $this->actorService->agency()->id)
+            ->where("gudang_id", $this->actorService->gudang()->id)
+            ->get();
     }
 
     public function getProdukById($id)

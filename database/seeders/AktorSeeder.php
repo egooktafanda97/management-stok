@@ -9,6 +9,7 @@ use App\Dtos\UsersDTOs;
 use App\Models\Agency;
 use App\Models\GeneralActor;
 use App\Models\Kasir;
+use App\Models\Supplier;
 use App\Models\User;
 use App\Repositories\GudangRepository;
 use App\Repositories\UserRepository;
@@ -29,8 +30,7 @@ class AktorSeeder extends Seeder
         public GudangService $gudangService,
         public KasirService $kasirService,
         public GeneralActorService $generalActor,
-    ) {
-    }
+    ) {}
     /**
      * Run the database seeds.
      */
@@ -48,25 +48,39 @@ class AktorSeeder extends Seeder
         $this->agencyService->create([
             "oncard_instansi_id" => 1,
             "kode_instansi" => "AGY1",
-            "nama" => "Pondok Pesantren Al-Munawwir",
-            "username" => "pondok_demo",
+            "nama" => "Agency 1",
+            "username" => "agency_demo",
             "password" => "password",
             "alamat" => "Agency 1",
         ]);
 
+
+
         // gundang
-        auth()->login(User::find(2)); // agency login
-        $this->gudangService->create([
-            "username" => "gudang_demo",
+        $authX =  auth()->login(User::whereUsername('agency_demo')->first());
+        $gudangx =  $this->gudangService->create([
+            "username" => "toko_demo",
             "password" => "password",
-            "nama" => "Gudang Demo",
-            "alamat" => "Gudang 1",
+            "nama" => "toko demo",
+            "alamat" => "toko_demo 1",
             "telepon" => "08123456789",
-            "deskripsi" => "Gudang 1",
+            "deskripsi" => "toko demo",
         ]);
 
+        $useAgency = Agency::whereUserId(
+            auth()->user()->id
+        )->first();
+
+
+        Supplier::create([
+            'agency_id' => $useAgency->id,
+            'gudang_id' => $gudangx->id,
+            'name' => 'Supplier 1',
+            'alamat_supplier' => 'Alamat Supplier 1',
+            'nomor_telepon_supplier' => '081234567890',
+        ]);
         // kasir
-        auth()->login(User::whereUsername('gudang_demo')->first());
+        auth()->login(User::whereUsername('toko_demo')->first());
         $this->kasirService->create([
             "username" => "kasir_demo",
             "password" => "password",
@@ -76,18 +90,19 @@ class AktorSeeder extends Seeder
             "deskripsi" => "Kasir 1",
         ]);
 
+
         // general  user
         auth()->login(User::whereUsername('kasir_demo')->first());
-        $generalCreated = $this->generalActor->fromDTOs(new GeneralActorDTOs(
+        $this->generalActor->fromDTOs(new GeneralActorDTOs(
             oncard_instansi_id: 1,
             oncard_user_id: 1,
             oncard_account_number: '123123123',
-            nama: "ego oktafanda",
+            nama: "umum",
             user_type: UserType::Merchant,
             sync_date: Carbon::now()->format("Y-m-d"),
             detail: "user merchant",
             user: new UsersDTOs(
-                username: "ego",
+                username: "umum",
                 password: "password",
             )
         ))->create();

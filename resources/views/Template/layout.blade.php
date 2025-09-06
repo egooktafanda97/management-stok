@@ -21,7 +21,7 @@
     {{-- barer token --}}
     <meta content="{{ $token }}" name="csrf-token">
     <!--favicon-->
-    <link href="https://oncard.id/assets/png/icon.png" rel="icon" type="image/png" />
+    {{-- <link href="https://oncard.id/assets/png/icon.png" rel="icon" type="image/png" /> --}}
     <!--plugins-->
     <link href="{{ asset('admin') }}/assets/plugins/vectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet" />
     <link href="{{ asset('admin') }}/assets/plugins/simplebar/css/simplebar.css" rel="stylesheet" />

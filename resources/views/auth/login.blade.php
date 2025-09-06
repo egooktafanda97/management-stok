@@ -221,7 +221,7 @@
             </form>
         </section>
         <section class="right-section">
-            <img src="{{ asset('admin') }}/assets/images/login.gif}}" />
+            {{-- <img src="{{ asset('admin') }}/assets/images/login.gif}}" /> --}}
             {{-- <img src="background-image.png" alt="Background Image">
             <h2>Hilangkan suara bising di latar belakang</h2>
             <p>Peredam bising yang cerdas menghilangkan suara bising di latar belakang saat Anda sedang melakukan presentasi</p>
